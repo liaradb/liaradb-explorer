@@ -14,7 +14,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "liaradb.helloWorld",
+        "command": "liaradb-explorer.helloWorld",
         "title": "Hello World"
       }
     ]
