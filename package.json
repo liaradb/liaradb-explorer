@@ -16,6 +16,14 @@
       {
         "command": "liaradb-explorer.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "catCoding.start",
+        "title": "catCoding start"
+      },
+      {
+        "command": "catCoding.doRefactor",
+        "title": "catCoding doRefactor"
       }
     ]
   },
