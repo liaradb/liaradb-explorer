@@ -4,6 +4,7 @@
   "recommendations": [
     "dbaeumer.vscode-eslint",
     "ms-vscode.extension-test-runner",
+    "amodio.tsl-problem-matcher",
     "esbenp.prettier-vscode"
   ]
 }
