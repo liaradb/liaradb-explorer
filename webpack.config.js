@@ -3,6 +3,7 @@
 "use strict";
 
 const path = require("path");
+const webpack = require("webpack");
 
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
@@ -27,12 +28,12 @@ const extensionConfig = {
   },
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
-    extensions: [".ts", ".js"],
+    extensions: [".ts", ".js", ".tsx"],
   },
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.([cm]?ts|tsx)$/,
         exclude: /node_modules/,
         use: [
           {
@@ -46,5 +47,10 @@ const extensionConfig = {
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      "process.env.NODE_ENV": JSON.stringify("production"),
+    }),
+  ],
 };
 module.exports = [extensionConfig];

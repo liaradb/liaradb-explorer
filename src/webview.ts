@@ -1,14 +1,20 @@
+import { createRoot } from "react-dom/client";
 import "vscode-webview";
+import { main } from "./main";
 
 const vscode = acquireVsCodeApi();
 
 function init() {
   const counter = document.getElementById("lines-of-code-counter");
   const button = document.getElementById("send");
-  if (!counter || !button) {
+  const app = document.getElementById("app");
+  if (!counter || !button || !app) {
     return;
   }
 
+  // Render your React component instead
+  const root = createRoot(app);
+  main(root);
   run(button, counter);
 }
 

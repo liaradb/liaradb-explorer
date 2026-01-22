@@ -113,6 +113,7 @@ function getWebviewContent(webview: vscode.Uri) {
     <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="300" />
     <h1 id="lines-of-code-counter">0</h1>
     <button id="send">Button</button>
+    <div id="app"></div>
     <script src="${webview}"></script>
 </body>
 </html>`;
