@@ -1,3 +1,5 @@
+import * as path from "path";
+
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
@@ -42,8 +44,12 @@ export function activate(context: vscode.ExtensionContext) {
           },
         );
 
+        const webview = panel.webview.asWebviewUri(
+          vscode.Uri.file(path.join(__dirname, "webview.js")),
+        );
+
         // And set its HTML content
-        panel.webview.html = getWebviewContent();
+        panel.webview.html = getWebviewContent(webview);
 
         // Handle messages from the webview
         panel.webview.onDidReceiveMessage(
@@ -95,7 +101,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
 }
 
-function getWebviewContent() {
+function getWebviewContent(webview: vscode.Uri) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,49 +113,7 @@ function getWebviewContent() {
     <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="300" />
     <h1 id="lines-of-code-counter">0</h1>
     <button id="send">Button</button>
-      <script>
-      (function() {
-        const vscode = acquireVsCodeApi();
-        const counter = document.getElementById('lines-of-code-counter');
-        const button = document.getElementById('send');
-        let requestId = 0;
-        button.addEventListener('click', () => {
-            vscode.postMessage({
-              command: 'request',
-              text: 'request',
-              requestId: requestId,
-            });
-            requestId++;
-        });
-
-        let count = 0;
-        setInterval(() => {
-          counter.textContent = count++;
-
-          // Alert the extension when our cat introduces a bug
-          if (Math.random() < 0.001 * count) {
-            vscode.postMessage({
-              command: 'alert',
-              text: '🐛  on line ' + count
-            })
-          }
-        }, 100);
-
-
-        // Handle the message inside the webview
-        window.addEventListener('message', event => {
-
-            const message = event.data; // The JSON data our extension sent
-
-            switch (message.command) {
-                case 'refactor':
-                  count = 0;
-                  counter.textContent = count;
-                  break;
-            }
-        });
-      }())
-    </script>
+    <script src="${webview}"></script>
 </body>
 </html>`;
 }
