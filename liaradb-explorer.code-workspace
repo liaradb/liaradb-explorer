@@ -7,6 +7,12 @@
       "path": "extension",
     },
     {
+      "path": "definitions",
+    },
+    {
+      "path": "definitions_ts",
+    },
+    {
       "name": "root",
       "path": ".",
     },
@@ -19,8 +25,13 @@
       "**/.hg": true,
       "**/.DS_Store": true,
       "**/Thumbs.db": true,
+      "out": true,
+      "dist": true,
+      "clientdist": true,
       "client": true,
       "extension": true,
+      "definitions": true,
+      "definitions_ts": true,
     },
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
