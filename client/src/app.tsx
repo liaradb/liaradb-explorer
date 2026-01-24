@@ -1,9 +1,11 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 
 import { useMessenger } from "./messenger_context";
 
 export const App = () => {
   const messenger = useMessenger();
+
+  const [results, setResult] = useState<unknown[]>([]);
 
   return (
     <>
@@ -19,12 +21,17 @@ export const App = () => {
             text: "request",
             requestId: 1,
           });
-          console.log(result);
+          setResult([...results, result]);
         }}
       >
         Button
       </button>
       <h1>Hello, world</h1>
+      <ul>
+        {results.map((r: any, i) => (
+          <li key={i}>{`${r.value}`}</li>
+        ))}
+      </ul>
     </>
   );
 };

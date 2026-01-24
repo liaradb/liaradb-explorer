@@ -34,7 +34,6 @@ export class Messenger {
 
   async sendRequest<R, T>(data: R) {
     const id = crypto.randomUUID();
-    console.log({ id });
 
     this.vscode.postMessage({
       command: "request",
