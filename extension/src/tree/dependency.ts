@@ -9,6 +9,10 @@ export class Dependency extends vscode.TreeItem {
     super(label, collapsibleState);
     this.tooltip = `${this.label}-${this.version}`;
     this.description = this.version;
+    this.contextValue =
+      collapsibleState === vscode.TreeItemCollapsibleState.None
+        ? "dependency"
+        : undefined;
   }
 
   iconPath = new vscode.ThemeIcon("gear");

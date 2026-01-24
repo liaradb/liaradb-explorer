@@ -29,6 +29,16 @@
         "command": "nodeDependencies.refreshEntry",
         "title": "Refresh",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "nodeDependencies.editEntry",
+        "title": "Edit",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "nodeDependencies.deleteEntry",
+        "title": "Delete",
+        "icon": "$(refresh)"
       }
     ],
     "viewsContainers": {
@@ -64,8 +74,25 @@
           "when": "view == nodeDependencies",
           "group": "navigation"
         }
+      ],
+      "view/item/context": [
+        {
+          "command": "nodeDependencies.editEntry",
+          "when": "view == nodeDependencies && viewItem == dependency",
+          "group": "inline"
+        },
+        {
+          "command": "nodeDependencies.deleteEntry",
+          "when": "view == nodeDependencies && viewItem == dependency"
+        }
       ]
-    }
+    },
+    "viewsWelcome": [
+      {
+        "view": "nodeDependencies",
+        "contents": "No node dependencies found [learn more](https://www.npmjs.com/).\n[Add Dependency](command:nodeDependencies.addEntry)"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
