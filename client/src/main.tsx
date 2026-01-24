@@ -1,6 +1,20 @@
-import React from "react";
+import React, { FC } from "react";
 import { Root } from "react-dom/client";
 
-export function main(root: Root) {
-  root.render(<h1>Hello, world</h1>);
+import { MessengerProvider } from "./messenger_context";
+import { VSCode, VSCodeProvider } from "./vscode_context";
+import { App } from "./app";
+
+export function main(root: Root, vscode: ReturnType<typeof acquireVsCodeApi>) {
+  root.render(<Main vscode={vscode} />);
 }
+
+const Main: FC<{ vscode: VSCode }> = ({ vscode }) => {
+  return (
+    <VSCodeProvider vscode={vscode}>
+      <MessengerProvider>
+        <App />
+      </MessengerProvider>
+    </VSCodeProvider>
+  );
+};
