@@ -272,7 +272,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.liara.GetAfterGlobalVersionRequest = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.liara.GetAfterGlobalVersionRequest.repeatedFields_, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.liara.GetAfterGlobalVersionRequest, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -314,7 +314,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.liara.CreateOutboxRequest = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.liara.CreateOutboxRequest.repeatedFields_, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.liara.CreateOutboxRequest, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -377,7 +377,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.liara.GetOutboxResponse = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.liara.GetOutboxResponse.repeatedFields_, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.liara.GetOutboxResponse, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -2943,13 +2943,6 @@ proto.liara.GetByAggregateIDAndNameRequest.prototype.setName = function(value) {
 
 
 
-/**
- * List of repeated fields within this message type.
- * @private {!Array<number>}
- * @const
- */
-proto.liara.GetAfterGlobalVersionRequest.repeatedFields_ = [3];
-
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -2983,8 +2976,9 @@ proto.liara.GetAfterGlobalVersionRequest.toObject = function(includeInstance, ms
   var f, obj = {
     tenantId: jspb.Message.getFieldWithDefault(msg, 1, ""),
     globalVersion: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    partitionIdsList: (f = jspb.Message.getRepeatedField(msg, 3)) == null ? undefined : f,
-    limit: jspb.Message.getFieldWithDefault(msg, 4, 0)
+    low: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    high: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    limit: jspb.Message.getFieldWithDefault(msg, 5, 0)
   };
 
   if (includeInstance) {
@@ -3030,12 +3024,14 @@ proto.liara.GetAfterGlobalVersionRequest.deserializeBinaryFromReader = function(
       msg.setGlobalVersion(value);
       break;
     case 3:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addPartitionIds(values[i]);
-      }
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setLow(value);
       break;
     case 4:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setHigh(value);
+      break;
+    case 5:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setLimit(value);
       break;
@@ -3082,17 +3078,24 @@ proto.liara.GetAfterGlobalVersionRequest.serializeBinaryToWriter = function(mess
       f
     );
   }
-  f = message.getPartitionIdsList();
-  if (f.length > 0) {
-    writer.writePackedInt32(
+  f = message.getLow();
+  if (f !== 0) {
+    writer.writeInt32(
       3,
+      f
+    );
+  }
+  f = message.getHigh();
+  if (f !== 0) {
+    writer.writeInt32(
+      4,
       f
     );
   }
   f = message.getLimit();
   if (f !== 0) {
     writer.writeInt64(
-      4,
+      5,
       f
     );
   }
@@ -3136,47 +3139,28 @@ proto.liara.GetAfterGlobalVersionRequest.prototype.setGlobalVersion = function(v
 
 
 /**
- * repeated int32 partition_ids = 3;
- * @return {!Array<number>}
+ * optional int32 low = 3;
+ * @return {number}
  */
-proto.liara.GetAfterGlobalVersionRequest.prototype.getPartitionIdsList = function() {
-  return /** @type {!Array<number>} */ (jspb.Message.getRepeatedField(this, 3));
-};
-
-
-/**
- * @param {!Array<number>} value
- * @return {!proto.liara.GetAfterGlobalVersionRequest} returns this
- */
-proto.liara.GetAfterGlobalVersionRequest.prototype.setPartitionIdsList = function(value) {
-  return jspb.Message.setField(this, 3, value || []);
+proto.liara.GetAfterGlobalVersionRequest.prototype.getLow = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
 };
 
 
 /**
  * @param {number} value
- * @param {number=} opt_index
  * @return {!proto.liara.GetAfterGlobalVersionRequest} returns this
  */
-proto.liara.GetAfterGlobalVersionRequest.prototype.addPartitionIds = function(value, opt_index) {
-  return jspb.Message.addToRepeatedField(this, 3, value, opt_index);
+proto.liara.GetAfterGlobalVersionRequest.prototype.setLow = function(value) {
+  return jspb.Message.setProto3IntField(this, 3, value);
 };
 
 
 /**
- * Clears the list making it empty but non-null.
- * @return {!proto.liara.GetAfterGlobalVersionRequest} returns this
- */
-proto.liara.GetAfterGlobalVersionRequest.prototype.clearPartitionIdsList = function() {
-  return this.setPartitionIdsList([]);
-};
-
-
-/**
- * optional int64 limit = 4;
+ * optional int32 high = 4;
  * @return {number}
  */
-proto.liara.GetAfterGlobalVersionRequest.prototype.getLimit = function() {
+proto.liara.GetAfterGlobalVersionRequest.prototype.getHigh = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
 };
 
@@ -3185,8 +3169,26 @@ proto.liara.GetAfterGlobalVersionRequest.prototype.getLimit = function() {
  * @param {number} value
  * @return {!proto.liara.GetAfterGlobalVersionRequest} returns this
  */
-proto.liara.GetAfterGlobalVersionRequest.prototype.setLimit = function(value) {
+proto.liara.GetAfterGlobalVersionRequest.prototype.setHigh = function(value) {
   return jspb.Message.setProto3IntField(this, 4, value);
+};
+
+
+/**
+ * optional int64 limit = 5;
+ * @return {number}
+ */
+proto.liara.GetAfterGlobalVersionRequest.prototype.getLimit = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.liara.GetAfterGlobalVersionRequest} returns this
+ */
+proto.liara.GetAfterGlobalVersionRequest.prototype.setLimit = function(value) {
+  return jspb.Message.setProto3IntField(this, 5, value);
 };
 
 
@@ -3381,13 +3383,6 @@ proto.liara.GetByOutboxRequest.prototype.setLimit = function(value) {
 
 
 
-/**
- * List of repeated fields within this message type.
- * @private {!Array<number>}
- * @const
- */
-proto.liara.CreateOutboxRequest.repeatedFields_ = [3];
-
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -3421,7 +3416,8 @@ proto.liara.CreateOutboxRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     tenantId: jspb.Message.getFieldWithDefault(msg, 1, ""),
     outboxId: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    partitionIdList: (f = jspb.Message.getRepeatedField(msg, 3)) == null ? undefined : f
+    low: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    high: jspb.Message.getFieldWithDefault(msg, 4, 0)
   };
 
   if (includeInstance) {
@@ -3467,10 +3463,12 @@ proto.liara.CreateOutboxRequest.deserializeBinaryFromReader = function(msg, read
       msg.setOutboxId(value);
       break;
     case 3:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addPartitionId(values[i]);
-      }
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setLow(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setHigh(value);
       break;
     default:
       reader.skipField();
@@ -3515,10 +3513,17 @@ proto.liara.CreateOutboxRequest.serializeBinaryToWriter = function(message, writ
       f
     );
   }
-  f = message.getPartitionIdList();
-  if (f.length > 0) {
-    writer.writePackedInt32(
+  f = message.getLow();
+  if (f !== 0) {
+    writer.writeInt32(
       3,
+      f
+    );
+  }
+  f = message.getHigh();
+  if (f !== 0) {
+    writer.writeInt32(
+      4,
       f
     );
   }
@@ -3562,39 +3567,38 @@ proto.liara.CreateOutboxRequest.prototype.setOutboxId = function(value) {
 
 
 /**
- * repeated int32 partition_id = 3;
- * @return {!Array<number>}
+ * optional int32 low = 3;
+ * @return {number}
  */
-proto.liara.CreateOutboxRequest.prototype.getPartitionIdList = function() {
-  return /** @type {!Array<number>} */ (jspb.Message.getRepeatedField(this, 3));
-};
-
-
-/**
- * @param {!Array<number>} value
- * @return {!proto.liara.CreateOutboxRequest} returns this
- */
-proto.liara.CreateOutboxRequest.prototype.setPartitionIdList = function(value) {
-  return jspb.Message.setField(this, 3, value || []);
+proto.liara.CreateOutboxRequest.prototype.getLow = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
 };
 
 
 /**
  * @param {number} value
- * @param {number=} opt_index
  * @return {!proto.liara.CreateOutboxRequest} returns this
  */
-proto.liara.CreateOutboxRequest.prototype.addPartitionId = function(value, opt_index) {
-  return jspb.Message.addToRepeatedField(this, 3, value, opt_index);
+proto.liara.CreateOutboxRequest.prototype.setLow = function(value) {
+  return jspb.Message.setProto3IntField(this, 3, value);
 };
 
 
 /**
- * Clears the list making it empty but non-null.
+ * optional int32 high = 4;
+ * @return {number}
+ */
+proto.liara.CreateOutboxRequest.prototype.getHigh = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/**
+ * @param {number} value
  * @return {!proto.liara.CreateOutboxRequest} returns this
  */
-proto.liara.CreateOutboxRequest.prototype.clearPartitionIdList = function() {
-  return this.setPartitionIdList([]);
+proto.liara.CreateOutboxRequest.prototype.setHigh = function(value) {
+  return jspb.Message.setProto3IntField(this, 4, value);
 };
 
 
@@ -3889,13 +3893,6 @@ proto.liara.GetOutboxRequest.prototype.setOutboxId = function(value) {
 
 
 
-/**
- * List of repeated fields within this message type.
- * @private {!Array<number>}
- * @const
- */
-proto.liara.GetOutboxResponse.repeatedFields_ = [2];
-
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -3928,7 +3925,8 @@ proto.liara.GetOutboxResponse.prototype.toObject = function(opt_includeInstance)
 proto.liara.GetOutboxResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
     globalVersion: jspb.Message.getFieldWithDefault(msg, 1, 0),
-    partitionIdList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f
+    low: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    high: jspb.Message.getFieldWithDefault(msg, 3, 0)
   };
 
   if (includeInstance) {
@@ -3970,10 +3968,12 @@ proto.liara.GetOutboxResponse.deserializeBinaryFromReader = function(msg, reader
       msg.setGlobalVersion(value);
       break;
     case 2:
-      var values = /** @type {!Array<number>} */ (reader.isDelimited() ? reader.readPackedInt32() : [reader.readInt32()]);
-      for (var i = 0; i < values.length; i++) {
-        msg.addPartitionId(values[i]);
-      }
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setLow(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setHigh(value);
       break;
     default:
       reader.skipField();
@@ -4011,10 +4011,17 @@ proto.liara.GetOutboxResponse.serializeBinaryToWriter = function(message, writer
       f
     );
   }
-  f = message.getPartitionIdList();
-  if (f.length > 0) {
-    writer.writePackedInt32(
+  f = message.getLow();
+  if (f !== 0) {
+    writer.writeInt32(
       2,
+      f
+    );
+  }
+  f = message.getHigh();
+  if (f !== 0) {
+    writer.writeInt32(
+      3,
       f
     );
   }
@@ -4040,39 +4047,38 @@ proto.liara.GetOutboxResponse.prototype.setGlobalVersion = function(value) {
 
 
 /**
- * repeated int32 partition_id = 2;
- * @return {!Array<number>}
+ * optional int32 low = 2;
+ * @return {number}
  */
-proto.liara.GetOutboxResponse.prototype.getPartitionIdList = function() {
-  return /** @type {!Array<number>} */ (jspb.Message.getRepeatedField(this, 2));
-};
-
-
-/**
- * @param {!Array<number>} value
- * @return {!proto.liara.GetOutboxResponse} returns this
- */
-proto.liara.GetOutboxResponse.prototype.setPartitionIdList = function(value) {
-  return jspb.Message.setField(this, 2, value || []);
+proto.liara.GetOutboxResponse.prototype.getLow = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
 };
 
 
 /**
  * @param {number} value
- * @param {number=} opt_index
  * @return {!proto.liara.GetOutboxResponse} returns this
  */
-proto.liara.GetOutboxResponse.prototype.addPartitionId = function(value, opt_index) {
-  return jspb.Message.addToRepeatedField(this, 2, value, opt_index);
+proto.liara.GetOutboxResponse.prototype.setLow = function(value) {
+  return jspb.Message.setProto3IntField(this, 2, value);
 };
 
 
 /**
- * Clears the list making it empty but non-null.
+ * optional int32 high = 3;
+ * @return {number}
+ */
+proto.liara.GetOutboxResponse.prototype.getHigh = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/**
+ * @param {number} value
  * @return {!proto.liara.GetOutboxResponse} returns this
  */
-proto.liara.GetOutboxResponse.prototype.clearPartitionIdList = function() {
-  return this.setPartitionIdList([]);
+proto.liara.GetOutboxResponse.prototype.setHigh = function(value) {
+  return jspb.Message.setProto3IntField(this, 3, value);
 };
 
 

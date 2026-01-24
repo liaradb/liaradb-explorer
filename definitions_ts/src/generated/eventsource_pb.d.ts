@@ -314,10 +314,10 @@ export class GetAfterGlobalVersionRequest extends jspb.Message {
     setTenantId(value: string): GetAfterGlobalVersionRequest;
     getGlobalVersion(): number;
     setGlobalVersion(value: number): GetAfterGlobalVersionRequest;
-    clearPartitionIdsList(): void;
-    getPartitionIdsList(): Array<number>;
-    setPartitionIdsList(value: Array<number>): GetAfterGlobalVersionRequest;
-    addPartitionIds(value: number, index?: number): number;
+    getLow(): number;
+    setLow(value: number): GetAfterGlobalVersionRequest;
+    getHigh(): number;
+    setHigh(value: number): GetAfterGlobalVersionRequest;
     getLimit(): number;
     setLimit(value: number): GetAfterGlobalVersionRequest;
 
@@ -335,7 +335,8 @@ export namespace GetAfterGlobalVersionRequest {
     export type AsObject = {
         tenantId: string,
         globalVersion: number,
-        partitionIdsList: Array<number>,
+        low: number,
+        high: number,
         limit: number,
     }
 }
@@ -371,10 +372,10 @@ export class CreateOutboxRequest extends jspb.Message {
     setTenantId(value: string): CreateOutboxRequest;
     getOutboxId(): string;
     setOutboxId(value: string): CreateOutboxRequest;
-    clearPartitionIdList(): void;
-    getPartitionIdList(): Array<number>;
-    setPartitionIdList(value: Array<number>): CreateOutboxRequest;
-    addPartitionId(value: number, index?: number): number;
+    getLow(): number;
+    setLow(value: number): CreateOutboxRequest;
+    getHigh(): number;
+    setHigh(value: number): CreateOutboxRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CreateOutboxRequest.AsObject;
@@ -390,7 +391,8 @@ export namespace CreateOutboxRequest {
     export type AsObject = {
         tenantId: string,
         outboxId: string,
-        partitionIdList: Array<number>,
+        low: number,
+        high: number,
     }
 }
 
@@ -440,10 +442,10 @@ export namespace GetOutboxRequest {
 export class GetOutboxResponse extends jspb.Message { 
     getGlobalVersion(): number;
     setGlobalVersion(value: number): GetOutboxResponse;
-    clearPartitionIdList(): void;
-    getPartitionIdList(): Array<number>;
-    setPartitionIdList(value: Array<number>): GetOutboxResponse;
-    addPartitionId(value: number, index?: number): number;
+    getLow(): number;
+    setLow(value: number): GetOutboxResponse;
+    getHigh(): number;
+    setHigh(value: number): GetOutboxResponse;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetOutboxResponse.AsObject;
@@ -458,7 +460,8 @@ export class GetOutboxResponse extends jspb.Message {
 export namespace GetOutboxResponse {
     export type AsObject = {
         globalVersion: number,
-        partitionIdList: Array<number>,
+        low: number,
+        high: number,
     }
 }
 

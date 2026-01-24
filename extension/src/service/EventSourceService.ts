@@ -44,13 +44,15 @@ const service = {
 
 export async function createOutbox(
   outboxId: string,
-  partitionIds: number[],
   tenantId: string,
+  low: number,
+  high: number,
 ) {
   const request = new CreateOutboxRequest();
-  request.setPartitionIdList(partitionIds);
   request.setOutboxId(outboxId);
   request.setTenantId(tenantId);
+  request.setLow(low);
+  request.setHigh(high);
 
   const response = await service.createOutbox(request);
 
@@ -66,6 +68,7 @@ export async function getOutbox(outboxId: string, tenantId: string) {
 
   return {
     globalVersion: response.getGlobalVersion(),
-    partitionIds: response.getPartitionIdList(),
+    low: response.getLow(),
+    high: response.getHigh(),
   };
 }

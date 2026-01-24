@@ -3,6 +3,7 @@ import * as path from "path";
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
+import { getOutbox } from "./service/EventSourceService";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -81,12 +82,22 @@ export function activate(context: vscode.ExtensionContext) {
         currentPanel = panel;
       }
 
-      const result = await fetch("https://api.sampleapis.com/coffee/hot");
-      console.log(await result.json());
+      try {
+        const outbox = await getOutbox(
+          "a4706b36-a2df-473d-a585-9512bbd6e08d",
+          "abcdef",
+        );
+        console.log(outbox);
+      } catch (e) {
+        console.error(e);
+      }
 
-      await context.globalState.update("key", "value");
-      const value = context.globalState.get("key", "default");
-      console.log(value);
+      // const result = await fetch("https://api.sampleapis.com/coffee/hot");
+      // console.log(await result.json());
+
+      // await context.globalState.update("key", "value");
+      // const value = context.globalState.get("key", "default");
+      // console.log(value);
     }),
   );
 
