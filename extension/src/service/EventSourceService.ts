@@ -4,54 +4,68 @@
 import { credentials } from "definitions_ts/node_modules/@grpc/grpc-js";
 
 import { EventSourceServiceClient } from "definitions_ts/src/generated/eventsource_grpc_pb";
+import {
+  CreateOutboxRequest,
+  GetOutboxRequest,
+} from "definitions_ts/src/generated/eventsource_pb";
 
 import {
   serverStreamCallToPromise,
   unaryCallToPromise,
 } from "./unaryCallToPromise";
 
-const eventSourceClient = new EventSourceServiceClient(
+const client = new EventSourceServiceClient(
   "localhost:50055",
   credentials.createInsecure(),
 );
 
-const eventSourceService = {
-  append: unaryCallToPromise(eventSourceClient.append.bind(eventSourceClient)),
-  createOutbox: unaryCallToPromise(
-    eventSourceClient.createOutbox.bind(eventSourceClient),
-  ),
-  createTenant: unaryCallToPromise(
-    eventSourceClient.createTenant.bind(eventSourceClient),
-  ),
-  deleteTenant: unaryCallToPromise(
-    eventSourceClient.deleteTenant.bind(eventSourceClient),
-  ),
-  get: serverStreamCallToPromise(eventSourceClient.get.bind(eventSourceClient)),
+const service = {
+  append: unaryCallToPromise(client.append.bind(client)),
+  createOutbox: unaryCallToPromise(client.createOutbox.bind(client)),
+  createTenant: unaryCallToPromise(client.createTenant.bind(client)),
+  deleteTenant: unaryCallToPromise(client.deleteTenant.bind(client)),
+  get: serverStreamCallToPromise(client.get.bind(client)),
   getAfterGlobalVersion: serverStreamCallToPromise(
-    eventSourceClient.getAfterGlobalVersion.bind(eventSourceClient),
+    client.getAfterGlobalVersion.bind(client),
   ),
   getByAggregateIDAndName: serverStreamCallToPromise(
-    eventSourceClient.getByAggregateIDAndName.bind(eventSourceClient),
+    client.getByAggregateIDAndName.bind(client),
   ),
-  getByOutbox: serverStreamCallToPromise(
-    eventSourceClient.getByOutbox.bind(eventSourceClient),
-  ),
-  getOutbox: unaryCallToPromise(
-    eventSourceClient.getOutbox.bind(eventSourceClient),
-  ),
-  getTenant: unaryCallToPromise(
-    eventSourceClient.getTenant.bind(eventSourceClient),
-  ),
-  listTenants: serverStreamCallToPromise(
-    eventSourceClient.listTenants.bind(eventSourceClient),
-  ),
-  renameTenant: unaryCallToPromise(
-    eventSourceClient.renameTenant.bind(eventSourceClient),
-  ),
-  testIdempotency: unaryCallToPromise(
-    eventSourceClient.testIdempotency.bind(eventSourceClient),
-  ),
+  getByOutbox: serverStreamCallToPromise(client.getByOutbox.bind(client)),
+  getOutbox: unaryCallToPromise(client.getOutbox.bind(client)),
+  getTenant: unaryCallToPromise(client.getTenant.bind(client)),
+  listTenants: serverStreamCallToPromise(client.listTenants.bind(client)),
+  renameTenant: unaryCallToPromise(client.renameTenant.bind(client)),
+  testIdempotency: unaryCallToPromise(client.testIdempotency.bind(client)),
   updateOutboxPosition: unaryCallToPromise(
-    eventSourceClient.updateOutboxPosition.bind(eventSourceClient),
+    client.updateOutboxPosition.bind(client),
   ),
 };
+
+export async function createOutbox(
+  outboxId: string,
+  partitionIds: number[],
+  tenantId: string,
+) {
+  const request = new CreateOutboxRequest();
+  request.setPartitionIdList(partitionIds);
+  request.setOutboxId(outboxId);
+  request.setTenantId(tenantId);
+
+  const response = await service.createOutbox(request);
+
+  return response.getOutboxId();
+}
+
+export async function getOutbox(outboxId: string, tenantId: string) {
+  const request = new GetOutboxRequest();
+  request.setOutboxId(outboxId);
+  request.setTenantId(tenantId);
+
+  const response = await service.getOutbox(request);
+
+  return {
+    globalVersion: response.getGlobalVersion(),
+    partitionIds: response.getPartitionIdList(),
+  };
+}
