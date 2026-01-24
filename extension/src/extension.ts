@@ -4,6 +4,7 @@ import * as path from "path";
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import { getOutbox } from "./service/EventSourceService";
+import { NodeDependenciesProvider } from "./tree/node_dependencies_provider";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -32,6 +33,27 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand("catCoding.start", async () => {
+      const rootPath =
+        vscode.workspace.workspaceFolders &&
+        vscode.workspace.workspaceFolders.length > 0
+          ? vscode.workspace.workspaceFolders[0].uri.fsPath
+          : undefined;
+      if (rootPath) {
+        const nodeDependenciesProvider = new NodeDependenciesProvider(rootPath);
+        vscode.window.createTreeView("nodeDependencies", {
+          treeDataProvider: nodeDependenciesProvider,
+        });
+
+        // vscode.window.registerTreeDataProvider(
+        //   "nodeDependencies",
+        //   nodeDependenciesProvider,
+        // );
+
+        vscode.commands.registerCommand("nodeDependencies.refreshEntry", () =>
+          nodeDependenciesProvider.refresh(),
+        );
+      }
+
       if (currentPanel) {
         currentPanel.reveal(vscode.ViewColumn.One);
       } else {

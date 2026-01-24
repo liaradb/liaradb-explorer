@@ -24,8 +24,48 @@
       {
         "command": "catCoding.doRefactor",
         "title": "catCoding doRefactor"
+      },
+      {
+        "command": "nodeDependencies.refreshEntry",
+        "title": "Refresh",
+        "icon": "$(refresh)"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "package-explorer",
+          "title": "Package Explorer",
+          "icon": "$(refresh)"
+        }
+      ]
+    },
+    "views": {
+      "activitybar": [
+        {
+          "id": "nodeDependencies",
+          "name": "Node Dependencies",
+          "icon": "$(refresh)"
+        }
+      ],
+      "package-explorer": [
+        {
+          "id": "nodeDependencies",
+          "name": "Node Dependencies",
+          "icon": "$(refresh)",
+          "contextualTitle": "Package Explorer"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "nodeDependencies.refreshEntry",
+          "when": "view == nodeDependencies",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
