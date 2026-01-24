@@ -55,15 +55,16 @@ export function activate(context: vscode.ExtensionContext) {
 
         // Handle messages from the webview
         panel.webview.onDidReceiveMessage(
-          (message) => {
+          (message: Message) => {
             switch (message.command) {
               case "alert":
                 vscode.window.showErrorMessage(message.text);
                 return;
               case "request":
-                vscode.window.showErrorMessage(
-                  message.text + message.requestId,
-                );
+                vscode.window.showErrorMessage(message.data + message.id);
+                if (currentPanel?.webview) {
+                  handleRequest(currentPanel.webview, message);
+                }
             }
           },
           undefined,
@@ -102,6 +103,35 @@ export function activate(context: vscode.ExtensionContext) {
     }),
   );
 }
+
+const handleRequest = (webview: vscode.Webview, request: RequestMessage) => {
+  webview.postMessage({
+    command: "response",
+    id: request.id,
+    data: {
+      value: "Response value",
+    },
+  });
+};
+
+export type Message = UnknownMessage | RequestMessage;
+
+export type UnknownMessage = {
+  command: "alert";
+  text: string;
+};
+
+export type RequestMessage = {
+  command: "request";
+  id: string;
+  data: unknown;
+};
+
+export type ResponseMessage = {
+  command: "response";
+  id: string;
+  data: unknown;
+};
 
 function getWebviewContent(webview: vscode.Uri) {
   return `<!DOCTYPE html>

@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import "vscode-webview";
 import { main } from "./main";
+import { Message, Messenger } from "./messenger";
 
 const vscode = acquireVsCodeApi();
 
@@ -19,37 +20,28 @@ function init() {
 }
 
 function run(button: HTMLElement, counter: HTMLElement) {
+  const messenger = new Messenger(vscode);
+
   let requestId = 0;
-  button?.addEventListener("click", () => {
-    vscode.postMessage({
-      command: "request",
+
+  button?.addEventListener("click", async () => {
+    const result = await messenger.sendRequest({
       text: "request",
       requestId: requestId,
     });
+    console.log(result);
     requestId++;
   });
 
-  let count = 0;
-  setInterval(() => {
-    counter.textContent = `${count++}`;
-
-    // Alert the extension when our cat introduces a bug
-    if (Math.random() < 0.001 * count) {
-      vscode.postMessage({
-        command: "alert",
-        text: "🐛  on line " + count,
-      });
-    }
-  }, 100);
-
   // Handle the message inside the webview
   window.addEventListener("message", (event) => {
-    const message = event.data; // The JSON data our extension sent
+    const message: Message = event.data; // The JSON data our extension sent
 
     switch (message.command) {
       case "refactor":
-        count = 0;
-        counter.textContent = `${count}`;
+        break;
+      case "response":
+        messenger.handleResponse(message);
         break;
     }
   });
