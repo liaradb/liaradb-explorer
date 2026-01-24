@@ -1,16 +1,35 @@
-import { ClientReadableStream, ClientUnaryCall, Metadata, ServiceError } from "@grpc/grpc-js";
+import {
+  ClientReadableStream,
+  ClientUnaryCall,
+  Metadata,
+  ServiceError,
+} from "@grpc/grpc-js";
 import { CallOptions } from "@grpc/grpc-js/build/src/client";
 
 export interface UnaryCall<R, O> {
-  (request: R, callback: (error: ServiceError | null, response: O) => void): ClientUnaryCall;
-  (request: R, metadata: Metadata, callback: (error: ServiceError | null, response: O) => void): ClientUnaryCall;
-  (request: R, metadata: Metadata, options: Partial<CallOptions>, callback: (error: ServiceError | null, response: O) => void): ClientUnaryCall;
+  (
+    request: R,
+    callback: (error: ServiceError | null, response: O) => void,
+  ): ClientUnaryCall;
+  (
+    request: R,
+    metadata: Metadata,
+    callback: (error: ServiceError | null, response: O) => void,
+  ): ClientUnaryCall;
+  (
+    request: R,
+    metadata: Metadata,
+    options: Partial<CallOptions>,
+    callback: (error: ServiceError | null, response: O) => void,
+  ): ClientUnaryCall;
 }
 
 export function unaryCallToPromise<R, O>(unaryCall: UnaryCall<R, O>) {
   return (request: R) => {
     return new Promise<O>((resolve, reject) => {
-      unaryCall(request, (err, result) => {
+      const m = new Metadata();
+      m.add("cache", "no-store");
+      unaryCall(request, m, (err, result) => {
         if (err) {
           reject(err);
           return;
@@ -26,12 +45,11 @@ export function unaryCallToPromise<R, O>(unaryCall: UnaryCall<R, O>) {
 }
 
 export interface ServerStreamCall<R, O> {
-  (request: R, options?: Partial<CallOptions>): ClientReadableStream<O>;
-  (request: R, metadata?: Metadata, options?: Partial<CallOptions>): ClientReadableStream<O>;
+  (argument: R, options?: CallOptions): ClientReadableStream<O>;
 }
 
 export function serverStreamCallToPromise<R, O>(
-  serverStreamCall: ServerStreamCall<R, O>
+  serverStreamCall: ServerStreamCall<R, O>,
 ) {
   return (request: R) => {
     const stream = serverStreamCall(request);
