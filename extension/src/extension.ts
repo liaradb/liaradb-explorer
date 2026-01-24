@@ -82,16 +82,6 @@ export function activate(context: vscode.ExtensionContext) {
         currentPanel = panel;
       }
 
-      try {
-        const outbox = await getOutbox(
-          "a4706b36-a2df-473d-a585-9512bbd6e08d",
-          "abcdef",
-        );
-        console.log(outbox);
-      } catch (e) {
-        console.error(e);
-      }
-
       // const result = await fetch("https://api.sampleapis.com/coffee/hot");
       // console.log(await result.json());
 
@@ -115,13 +105,39 @@ export function activate(context: vscode.ExtensionContext) {
   );
 }
 
-const handleRequest = (webview: vscode.Webview, request: RequestMessage) => {
+const handleRequest = async (
+  webview: vscode.Webview,
+  request: RequestMessage,
+) => {
+  try {
+    switch (request.data.method) {
+      case "getOutbox":
+        const outbox = await getOutbox(
+          request.data.message.outboxId,
+          request.data.message.tenantId,
+        );
+
+        send(webview, request.id, outbox);
+        break;
+    }
+  } catch (err) {
+    sendError(webview, request.id, `${err}`);
+  }
+};
+
+const send = (webview: vscode.Webview, id: string, message: ResponseData) => {
   webview.postMessage({
     command: "response",
-    id: request.id,
-    data: {
-      value: "Response value",
-    },
+    id,
+    data: message,
+  });
+};
+
+const sendError = (webview: vscode.Webview, id: string, error: string) => {
+  webview.postMessage({
+    command: "response",
+    id,
+    error,
   });
 };
 
@@ -135,13 +151,30 @@ export type UnknownMessage = {
 export type RequestMessage = {
   command: "request";
   id: string;
-  data: unknown;
+  data: GetOutboxRequest;
 };
 
 export type ResponseMessage = {
   command: "response";
   id: string;
-  data: unknown;
+  data: ResponseData;
+  error: string | undefined;
+};
+
+type ResponseData = GetOutboxResponse;
+
+type GetOutboxRequest = {
+  method: "getOutbox";
+  message: {
+    outboxId: string;
+    tenantId: string;
+  };
+};
+
+type GetOutboxResponse = {
+  globalVersion: number;
+  low: number;
+  high: number;
 };
 
 function getWebviewContent(webview: vscode.Uri) {

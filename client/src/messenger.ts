@@ -8,6 +8,7 @@ export type ResponseMessage = {
   command: "response";
   id: string;
   data: unknown;
+  error: string | undefined;
 };
 
 export type RequestMessage = {
@@ -21,7 +22,10 @@ export type WebviewApi = ReturnType<typeof acquireVsCodeApi>;
 export class Messenger {
   constructor(private vscode: WebviewApi) {}
 
-  private handlers: Record<string, (result: any) => void> = {};
+  private handlers: Record<
+    string,
+    (result: any, error: string | undefined) => void
+  > = {};
 
   handleResponse(message: ResponseMessage) {
     const handler = this.handlers[message.id];
@@ -29,10 +33,10 @@ export class Messenger {
       return;
     }
 
-    handler(message.data);
+    handler(message.data, message.error);
   }
 
-  async sendRequest<R, T>(data: R) {
+  async sendRequest<Req, Res>(data: Req) {
     const id = crypto.randomUUID();
 
     this.vscode.postMessage({
@@ -41,9 +45,13 @@ export class Messenger {
       data,
     });
 
-    return new Promise<T>((resolve, reject) => {
-      this.handlers[id] = (result: T) => {
-        resolve(result);
+    return new Promise<Res>((resolve, reject) => {
+      this.handlers[id] = (result: Res, error: string | undefined) => {
+        if (error) {
+          reject(new Error(error));
+        } else {
+          resolve(result);
+        }
       };
     });
   }
