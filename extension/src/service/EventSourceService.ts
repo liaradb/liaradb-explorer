@@ -6,7 +6,9 @@ import { credentials } from "definitions_ts/node_modules/@grpc/grpc-js";
 import { EventSourceServiceClient } from "definitions_ts/src/generated/eventsource_grpc_pb";
 import {
   CreateOutboxRequest,
+  CreateTenantRequest,
   GetOutboxRequest,
+  ListTenantsRequest,
 } from "definitions_ts/src/generated/eventsource_pb";
 
 import {
@@ -41,6 +43,27 @@ const service = {
     client.updateOutboxPosition.bind(client),
   ),
 };
+
+export async function createTenant(tenantId: string, name: string) {
+  const request = new CreateTenantRequest();
+  request.setTenantId(tenantId);
+  request.setName(name);
+
+  const response = await service.createTenant(request);
+
+  return response.getTenantId();
+}
+
+export async function listTenants() {
+  const request = new ListTenantsRequest();
+
+  const response = await service.listTenants(request);
+
+  return response.map((t) => ({
+    id: t.getTenantId(),
+    name: t.getName(),
+  }));
+}
 
 export async function createOutbox(
   outboxId: string,

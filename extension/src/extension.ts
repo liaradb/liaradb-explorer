@@ -3,7 +3,7 @@ import * as path from "path";
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { getOutbox } from "./service/EventSourceService";
+import { getOutbox, listTenants } from "./service/EventSourceService";
 import { NodeDependenciesProvider } from "./tree/node_dependencies_provider";
 
 // This method is called when your extension is activated
@@ -31,6 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
     }),
   );
 
+  let registered = false;
   context.subscriptions.push(
     vscode.commands.registerCommand("catCoding.start", async () => {
       const rootPath =
@@ -38,7 +39,8 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.workspace.workspaceFolders.length > 0
           ? vscode.workspace.workspaceFolders[0].uri.fsPath
           : undefined;
-      if (rootPath) {
+      if (!registered && rootPath) {
+        registered = true;
         const nodeDependenciesProvider = new NodeDependenciesProvider(rootPath);
         vscode.window.createTreeView("nodeDependencies", {
           treeDataProvider: nodeDependenciesProvider,
@@ -104,6 +106,8 @@ export function activate(context: vscode.ExtensionContext) {
         currentPanel = panel;
       }
 
+      const tenants = await listTenants();
+      console.log(tenants);
       // const result = await fetch("https://api.sampleapis.com/coffee/hot");
       // console.log(await result.json());
 
