@@ -4,7 +4,7 @@ import {
   Tenant as TenantMessage,
 } from "definitions_ts/src/generated/eventsource_pb";
 
-import { Tenant } from "../domain/tenant";
+import { Tenant } from "../domain";
 
 import { service } from "./EventSourceService";
 
