@@ -4,12 +4,6 @@
 import { credentials } from "definitions_ts/node_modules/@grpc/grpc-js";
 
 import { EventSourceServiceClient } from "definitions_ts/src/generated/eventsource_grpc_pb";
-import {
-  CreateOutboxRequest,
-  CreateTenantRequest,
-  GetOutboxRequest,
-  ListTenantsRequest,
-} from "definitions_ts/src/generated/eventsource_pb";
 
 import {
   serverStreamCallToPromise,
@@ -21,7 +15,7 @@ const client = new EventSourceServiceClient(
   credentials.createInsecure(),
 );
 
-const service = {
+export const service = {
   append: unaryCallToPromise(client.append.bind(client)),
   createOutbox: unaryCallToPromise(client.createOutbox.bind(client)),
   createTenant: unaryCallToPromise(client.createTenant.bind(client)),
@@ -43,55 +37,3 @@ const service = {
     client.updateOutboxPosition.bind(client),
   ),
 };
-
-export async function createTenant(tenantId: string, name: string) {
-  const request = new CreateTenantRequest();
-  request.setTenantId(tenantId);
-  request.setName(name);
-
-  const response = await service.createTenant(request);
-
-  return response.getTenantId();
-}
-
-export async function listTenants() {
-  const request = new ListTenantsRequest();
-
-  const response = await service.listTenants(request);
-
-  return response.map((t) => ({
-    id: t.getTenantId(),
-    name: t.getName(),
-  }));
-}
-
-export async function createOutbox(
-  outboxId: string,
-  tenantId: string,
-  low: number,
-  high: number,
-) {
-  const request = new CreateOutboxRequest();
-  request.setOutboxId(outboxId);
-  request.setTenantId(tenantId);
-  request.setLow(low);
-  request.setHigh(high);
-
-  const response = await service.createOutbox(request);
-
-  return response.getOutboxId();
-}
-
-export async function getOutbox(outboxId: string, tenantId: string) {
-  const request = new GetOutboxRequest();
-  request.setOutboxId(outboxId);
-  request.setTenantId(tenantId);
-
-  const response = await service.getOutbox(request);
-
-  return {
-    globalVersion: response.getGlobalVersion(),
-    low: response.getLow(),
-    high: response.getHigh(),
-  };
-}
