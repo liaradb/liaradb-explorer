@@ -5,11 +5,12 @@ import * as path from "path";
 import * as vscode from "vscode";
 import { getOutbox } from "./service";
 import { NodeDependenciesProvider } from "./tree/node_dependencies_provider";
-import { ServerTreeProvider } from "./server_tree/server_tree_provider";
+import { activateServerTree } from "./server_tree";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+  activateServerTree(context);
   // Only allow a single Cat Coder
   let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
@@ -62,44 +63,6 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         registered = true;
-        const serverTreeProvider = new ServerTreeProvider(context);
-        vscode.window.createTreeView("serverTree", {
-          treeDataProvider: serverTreeProvider,
-        });
-
-        // vscode.window.registerTreeDataProvider(
-        //   "serverTree",
-        //   serverTreeProvider,
-        // );
-
-        vscode.commands.registerCommand("serverTree.refresh", () =>
-          serverTreeProvider.refresh(),
-        );
-
-        vscode.commands.registerCommand("serverTree.addServer", async () => {
-          const name = await vscode.window.showInputBox({
-            prompt: "Server name",
-          });
-
-          if (!name) {
-            vscode.window.showErrorMessage("invalid name");
-            return;
-          }
-
-          const href = await vscode.window.showInputBox({
-            prompt: "URI",
-            value: "http://localhost:50055",
-          });
-
-          if (!href) {
-            vscode.window.showErrorMessage("invalid URI");
-            return;
-          }
-
-          if (!serverTreeProvider.addServer(href, name)) {
-            vscode.window.showErrorMessage("invalid URI");
-          }
-        });
       }
 
       if (currentPanel) {

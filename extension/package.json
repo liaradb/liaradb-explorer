@@ -41,6 +41,11 @@
         "icon": "$(refresh)"
       },
       {
+        "command": "serverTree.show",
+        "title": "Show",
+        "icon": "$(refresh)"
+      },
+      {
         "command": "serverTree.refresh",
         "title": "Refresh",
         "icon": "$(refresh)"
