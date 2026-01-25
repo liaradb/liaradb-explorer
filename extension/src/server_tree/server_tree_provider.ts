@@ -7,7 +7,11 @@ import { ServerTreeNode } from "./server_tree_node";
 import { addServer, getServerMap } from "./servers";
 
 export class ServerTreeProvider implements vscode.TreeDataProvider<ServerTreeNode> {
-  constructor(private context: vscode.ExtensionContext) {}
+  constructor(private context: vscode.ExtensionContext) {
+    this.servers = this.listServers();
+  }
+
+  private servers: ServerNode[];
 
   getTreeItem(element: ServerTreeNode): vscode.TreeItem {
     return element.getTreeItem();
@@ -15,14 +19,10 @@ export class ServerTreeProvider implements vscode.TreeDataProvider<ServerTreeNod
 
   async getChildren(element?: ServerTreeNode): Promise<ServerTreeNode[]> {
     if (!element) {
-      // ServerNodes
-      return Object.entries(getServerMap(this.context))
-        .map(([href, { name }]) => new Server(vscode.Uri.parse(href), name))
-        .map((s) => new ServerNode(s));
+      return this.servers;
     }
 
-    // All other nodes
-    return [];
+    return element.getChildren();
   }
 
   async addServer(href: string, name: string) {
@@ -33,4 +33,23 @@ export class ServerTreeProvider implements vscode.TreeDataProvider<ServerTreeNod
     addServer(this.context, href, name);
     return true;
   }
+
+  async refresh() {
+    this.servers = this.listServers();
+    await Promise.all(this.servers.map((s) => s.refresh()));
+    this._onDidChangeTreeData.fire();
+  }
+
+  listServers() {
+    return Object.entries(getServerMap(this.context))
+      .map(([href, { name }]) => new Server(vscode.Uri.parse(href), name))
+      .map((s) => new ServerNode(s));
+  }
+
+  private _onDidChangeTreeData =
+    new vscode.EventEmitter<ServerTreeNodeNullable>();
+
+  readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 }
+
+type ServerTreeNodeNullable = ServerTreeNode | undefined | null | void;

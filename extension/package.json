@@ -39,6 +39,16 @@
         "command": "nodeDependencies.deleteEntry",
         "title": "Delete",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "serverTree.refresh",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "serverTree.addServer",
+        "title": "Add Server",
+        "icon": "$(plus)"
       }
     ],
     "viewsContainers": {
@@ -51,19 +61,16 @@
       ]
     },
     "views": {
-      "activitybar": [
+      "explorer": [
         {
           "id": "nodeDependencies",
           "name": "Node Dependencies",
           "icon": "$(refresh)"
-        }
-      ],
-      "package-explorer": [
+        },
         {
-          "id": "nodeDependencies",
-          "name": "Node Dependencies",
-          "icon": "$(refresh)",
-          "contextualTitle": "Package Explorer"
+          "id": "serverTree",
+          "name": "Server tree",
+          "icon": "$(refresh)"
         }
       ]
     },
@@ -72,6 +79,16 @@
         {
           "command": "nodeDependencies.refreshEntry",
           "when": "view == nodeDependencies",
+          "group": "navigation"
+        },
+        {
+          "command": "serverTree.refresh",
+          "when": "view == serverTree",
+          "group": "navigation"
+        },
+        {
+          "command": "serverTree.addServer",
+          "when": "view == serverTree",
           "group": "navigation"
         }
       ],
@@ -91,6 +108,10 @@
       {
         "view": "nodeDependencies",
         "contents": "No node dependencies found [learn more](https://www.npmjs.com/).\n[Add Dependency](command:nodeDependencies.addEntry)"
+      },
+      {
+        "view": "serverTree",
+        "contents": "No servers found.\n[Add Server](command:serverTree.addServer)"
       }
     ]
   },

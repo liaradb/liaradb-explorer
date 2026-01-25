@@ -42,6 +42,17 @@ export class ServerNode extends ServerTreeNode {
       try {
         this.loading = true;
         const tenants = await listTenants();
+        tenants.sort((a, b) => {
+          const an = a.getName();
+          const bn = b.getName();
+          if (an < bn) {
+            return -1;
+          }
+          if (an > bn) {
+            return 1;
+          }
+          return 0;
+        });
         this.tenants = tenants;
       } finally {
         this.loading = false;

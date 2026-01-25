@@ -3,8 +3,9 @@ import * as path from "path";
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { getOutbox, listTenants } from "./service";
+import { getOutbox } from "./service";
 import { NodeDependenciesProvider } from "./tree/node_dependencies_provider";
+import { ServerTreeProvider } from "./server_tree/server_tree_provider";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -39,21 +40,66 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.workspace.workspaceFolders.length > 0
           ? vscode.workspace.workspaceFolders[0].uri.fsPath
           : undefined;
-      if (!registered && rootPath) {
+
+      if (!registered) {
+        if (rootPath) {
+          registered = true;
+          const nodeDependenciesProvider = new NodeDependenciesProvider(
+            rootPath,
+          );
+          vscode.window.createTreeView("nodeDependencies", {
+            treeDataProvider: nodeDependenciesProvider,
+          });
+
+          // vscode.window.registerTreeDataProvider(
+          //   "nodeDependencies",
+          //   nodeDependenciesProvider,
+          // );
+
+          vscode.commands.registerCommand("nodeDependencies.refreshEntry", () =>
+            nodeDependenciesProvider.refresh(),
+          );
+        }
+
         registered = true;
-        const nodeDependenciesProvider = new NodeDependenciesProvider(rootPath);
-        vscode.window.createTreeView("nodeDependencies", {
-          treeDataProvider: nodeDependenciesProvider,
+        const serverTreeProvider = new ServerTreeProvider(context);
+        vscode.window.createTreeView("serverTree", {
+          treeDataProvider: serverTreeProvider,
         });
 
         // vscode.window.registerTreeDataProvider(
-        //   "nodeDependencies",
-        //   nodeDependenciesProvider,
+        //   "serverTree",
+        //   serverTreeProvider,
         // );
 
-        vscode.commands.registerCommand("nodeDependencies.refreshEntry", () =>
-          nodeDependenciesProvider.refresh(),
+        vscode.commands.registerCommand("serverTree.refresh", () =>
+          serverTreeProvider.refresh(),
         );
+
+        vscode.commands.registerCommand("serverTree.addServer", async () => {
+          const name = await vscode.window.showInputBox({
+            prompt: "Server name",
+          });
+
+          if (!name) {
+            vscode.window.showErrorMessage("invalid name");
+            return;
+          }
+
+          const href = await vscode.window.showInputBox({
+            prompt: "URI",
+            value: "http://localhost:50055",
+          });
+
+          if (!href) {
+            vscode.window.showErrorMessage("invalid URI");
+            return;
+          }
+
+          if (!serverTreeProvider.addServer(href, name)) {
+            vscode.window.showErrorMessage("invalid URI");
+          }
+        });
       }
 
       if (currentPanel) {
@@ -106,8 +152,8 @@ export function activate(context: vscode.ExtensionContext) {
         currentPanel = panel;
       }
 
-      const tenants = await listTenants();
-      console.log(tenants);
+      // const tenants = await listTenants();
+      // console.log(tenants);
       // const result = await fetch("https://api.sampleapis.com/coffee/hot");
       // console.log(await result.json());
 
