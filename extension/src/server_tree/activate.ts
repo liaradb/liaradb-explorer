@@ -2,6 +2,7 @@ import { ExtensionContext, Uri, commands, window } from "vscode";
 import { ServerTreeProvider } from "./server_tree_provider";
 import { clearServerMap } from "./servers";
 import { ServerNode } from "./server_node";
+import { TenantNode } from "./tenant_node";
 
 export function activateServerTree(context: ExtensionContext) {
   const provider = new ServerTreeProvider(context);
@@ -49,7 +50,13 @@ export function activateServerTree(context: ExtensionContext) {
     },
   );
 
-  commands.registerCommand("serverTree.renameTenant", () => {});
+  commands.registerCommand("serverTree.addTenant", (node: ServerNode) => {
+    console.log("rename", node);
+  });
+
+  commands.registerCommand("serverTree.renameTenant", (node: TenantNode) => {
+    console.log("rename", node);
+  });
 
   commands.registerCommand(
     "serverTree.renameServer",
@@ -60,6 +67,13 @@ export function activateServerTree(context: ExtensionContext) {
       }
 
       await provider.addServer(node.getUri(), name);
+    },
+  );
+
+  commands.registerCommand(
+    "serverTree.refreshServer",
+    async (node: ServerNode) => {
+      console.log("refresh", node);
     },
   );
 
