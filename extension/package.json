@@ -2,6 +2,9 @@
   "name": "liaradb-explorer",
   "displayName": "liaradb-explorer",
   "description": "",
+  "repository": {
+    "url": "https://github.com/liaradb/liaradb-explorer"
+  },
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.108.1"
@@ -164,22 +167,24 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "package": "vsce package"
   },
   "dependencies": {
-    "definitions_ts": "../definitions_ts",
     "@grpc/grpc-js": "^1.14.3",
     "@types/google-protobuf": "^3.15.12",
+    "definitions_ts": "../definitions_ts",
     "google-protobuf": "^4.0.1"
   },
   "devDependencies": {
-    "@types/vscode": "^1.108.1",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
-    "typescript-eslint": "^8.52.0",
+    "@types/vscode": "^1.108.1",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.7.1",
     "eslint": "^9.39.2",
     "typescript": "^5.9.3",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2"
+    "typescript-eslint": "^8.52.0"
   }
 }
