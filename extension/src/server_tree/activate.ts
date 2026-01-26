@@ -51,7 +51,17 @@ export function activateServerTree(context: ExtensionContext) {
 
   commands.registerCommand("serverTree.renameTenant", () => {});
 
-  commands.registerCommand("serverTree.renameServer", () => {});
+  commands.registerCommand(
+    "serverTree.renameServer",
+    async (node: ServerNode) => {
+      const name = await getRename(node.getName());
+      if (name === undefined) {
+        return;
+      }
+
+      await provider.addServer(node.getUri(), name);
+    },
+  );
 
   commands.registerCommand("serverTree.resetData", async () => {
     clearServerMap(context);
@@ -98,6 +108,26 @@ async function getName(uri: Uri) {
   if (trimmed === "") {
     window.showErrorMessage("invalid name");
     return getName(uri);
+  }
+
+  return trimmed;
+}
+
+async function getRename(base: string) {
+  const name = await window.showInputBox({
+    prompt: "Server name",
+    value: base,
+  });
+
+  if (name === undefined) {
+    return;
+  }
+
+  const trimmed = name.trim();
+
+  if (trimmed === "") {
+    window.showErrorMessage("invalid name");
+    return getRename(base);
   }
 
   return trimmed;
