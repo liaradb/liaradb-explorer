@@ -65,6 +65,20 @@ export function activateServerTree(context: ExtensionContext) {
   });
 
   commands.registerCommand(
+    "serverTree.deleteTenant",
+    async (node: TenantNode) => {
+      const answer = await window.showWarningMessage(
+        `Are you sure you want to delete ${node.getName()}?`,
+        { modal: true },
+        "Delete",
+      );
+      if (answer !== "Delete") {
+        return;
+      }
+    },
+  );
+
+  commands.registerCommand(
     "serverTree.renameServer",
     async (node: ServerNode) => {
       const name = await getRename("Server name", node.getName());

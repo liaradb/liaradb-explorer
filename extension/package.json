@@ -68,6 +68,12 @@
         "icon": "$(trash)"
       },
       {
+        "command": "serverTree.deleteTenant",
+        "title": "LiaraDB: Delete Tenant",
+        "shortTitle": "Delete Tenant",
+        "icon": "$(trash)"
+      },
+      {
         "command": "serverTree.refresh",
         "title": "LiaraDB: Refresh",
         "shortTitle": "Refresh",
@@ -178,6 +184,10 @@
           "command": "serverTree.renameTenant",
           "when": "view == serverTree && viewItem == tenant",
           "group": "inline"
+        },
+        {
+          "command": "serverTree.deleteTenant",
+          "when": "view == serverTree && viewItem == tenant"
         }
       ]
     },
