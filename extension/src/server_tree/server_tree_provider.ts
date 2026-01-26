@@ -48,12 +48,10 @@ export class ServerTreeProvider implements TreeDataProvider<ServerTreeNode> {
 
   async deleteServer(uri: Uri) {
     await deleteServer(this.context, uri);
-    await this.refresh();
+    this._onDidChangeTreeData.fire();
   }
 
   async refresh() {
-    this.servers = this.listServers();
-    await Promise.all(this.servers.map((s) => s.refresh()));
     this._onDidChangeTreeData.fire();
   }
 

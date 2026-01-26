@@ -40,8 +40,12 @@ export class ServerNode extends ServerTreeNode {
   }
 
   async getChildren(): Promise<ServerTreeNode[]> {
-    const tenants = await this.getTenants();
-    return tenants.map((t) => new TenantNode(t));
+    try {
+      const tenants = await this.getTenants();
+      return tenants.map((t) => new TenantNode(t));
+    } catch (err) {
+      return [];
+    }
   }
 
   async getTenants() {
