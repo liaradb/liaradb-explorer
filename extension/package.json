@@ -62,6 +62,11 @@
           "id": "package-explorer",
           "title": "Package Explorer",
           "icon": "$(refresh)"
+        },
+        {
+          "id": "liaradb-explorer",
+          "title": "LiaraDB Explorer",
+          "icon": "$(refresh)"
         }
       ]
     },
@@ -71,7 +76,9 @@
           "id": "nodeDependencies",
           "name": "Node Dependencies",
           "icon": "$(refresh)"
-        },
+        }
+      ],
+      "liaradb-explorer": [
         {
           "id": "serverTree",
           "name": "Server tree",
