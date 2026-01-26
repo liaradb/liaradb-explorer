@@ -40,32 +40,28 @@ export class ServerNode extends ServerTreeNode {
   }
 
   async getChildren(): Promise<ServerTreeNode[]> {
-    try {
-      const tenants = await this.getTenants();
-      return tenants.map((t) => new TenantNode(t));
-    } catch (err) {
-      return [];
-    }
-  }
-
-  async getTenants() {
     if (!this.loaded) {
-      await this.refresh();
-    }
-    return this.tenants;
-  }
-
-  async refresh() {
-    if (!this.loading) {
       try {
         this.loading = true;
-        const tenants = await this.service.listTenants();
-        this.tenants = tenants.sort((a, b) =>
-          a.getName().localeCompare(b.getName()),
-        );
+        this.tenants = await this.getTenants();
+        this.loaded = true;
+      } catch (err) {
+        // TODO: Show alert?
+        console.error(err);
       } finally {
         this.loading = false;
       }
     }
+
+    return this.tenants.map((t) => new TenantNode(t));
+  }
+
+  async getTenants() {
+    const tenants = await this.service.listTenants();
+    return tenants.sort((a, b) => a.getName().localeCompare(b.getName()));
+  }
+
+  async refresh() {
+    this.loaded = false;
   }
 }
