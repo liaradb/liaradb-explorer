@@ -1,15 +1,17 @@
 import * as vscode from "vscode";
 
 import { Server, Tenant } from "../domain";
-import { listTenants } from "../service";
+import { EventSourceService } from "../service";
 import { ServerTreeNode } from "./server_tree_node";
 import { TenantNode } from "./tenant_node";
 
 export class ServerNode extends ServerTreeNode {
   constructor(private server: Server) {
     super();
+    this.service = new EventSourceService(this.getAuthority());
   }
 
+  private service: EventSourceService;
   private loading = false;
   private loaded = false;
   private tenants: Tenant[] = [];
@@ -32,6 +34,11 @@ export class ServerNode extends ServerTreeNode {
     return this.server.getUri();
   }
 
+  private getAuthority() {
+    const parts = this.getUri().authority.split(":");
+    return `${parts[0]}:${parts[1] ?? "80"}`;
+  }
+
   async getChildren(): Promise<ServerTreeNode[]> {
     const tenants = await this.getTenants();
     return tenants.map((t) => new TenantNode(t));
@@ -48,7 +55,7 @@ export class ServerNode extends ServerTreeNode {
     if (!this.loading) {
       try {
         this.loading = true;
-        const tenants = await listTenants();
+        const tenants = await this.service.listTenants();
         this.tenants = tenants.sort((a, b) =>
           a.getName().localeCompare(b.getName()),
         );

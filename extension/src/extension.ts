@@ -3,9 +3,9 @@ import * as path from "path";
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { getOutbox } from "./service";
 import { NodeDependenciesProvider } from "./tree/node_dependencies_provider";
 import { activateServerTree } from "./server_tree";
+import { EventSourceService } from "./service";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -144,10 +144,11 @@ const handleRequest = async (
   webview: vscode.Webview,
   request: RequestMessage,
 ) => {
+  const service = new EventSourceService("localhost:50055");
   try {
     switch (request.data.method) {
       case "getOutbox":
-        const outbox = await getOutbox(
+        const outbox = await service.getOutbox(
           request.data.message.outboxId,
           request.data.message.tenantId,
         );

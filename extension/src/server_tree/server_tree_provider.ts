@@ -42,6 +42,7 @@ export class ServerTreeProvider implements TreeDataProvider<ServerTreeNode> {
 
   async addServer(uri: Uri, name: string) {
     await addServer(this.context, uri, name);
+    this._onDidChangeTreeData.fire();
     await this.refresh();
   }
 
