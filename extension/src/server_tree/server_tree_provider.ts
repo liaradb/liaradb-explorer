@@ -1,4 +1,10 @@
-import * as vscode from "vscode";
+import {
+  EventEmitter,
+  ExtensionContext,
+  TreeDataProvider,
+  TreeItem,
+  Uri,
+} from "vscode";
 
 import { Server } from "../domain";
 
@@ -6,14 +12,14 @@ import { ServerNode } from "./server_node";
 import { ServerTreeNode } from "./server_tree_node";
 import { addServer, getServerMap } from "./servers";
 
-export class ServerTreeProvider implements vscode.TreeDataProvider<ServerTreeNode> {
-  constructor(private context: vscode.ExtensionContext) {
+export class ServerTreeProvider implements TreeDataProvider<ServerTreeNode> {
+  constructor(private context: ExtensionContext) {
     this.servers = this.listServers();
   }
 
   private servers: ServerNode[];
 
-  getTreeItem(element: ServerTreeNode): vscode.TreeItem {
+  getTreeItem(element: ServerTreeNode): TreeItem {
     return element.getTreeItem();
   }
 
@@ -25,13 +31,18 @@ export class ServerTreeProvider implements vscode.TreeDataProvider<ServerTreeNod
     return element.getChildren();
   }
 
-  async addServer(href: string, name: string) {
-    if (!URL.canParse(href)) {
-      return false;
-    }
+  isUriUnique(uri: Uri) {
+    return !this.servers.some((s) => {
+      const aUri = s.getUri();
+      const a = aUri.toString();
+      const b = uri.toString();
+      return s.getUri().toString() === uri.toString();
+    });
+  }
 
-    addServer(this.context, href, name);
-    return true;
+  async addServer(uri: Uri, name: string) {
+    await addServer(this.context, uri, name);
+    await this.refresh();
   }
 
   async refresh() {
@@ -41,13 +52,13 @@ export class ServerTreeProvider implements vscode.TreeDataProvider<ServerTreeNod
   }
 
   listServers() {
-    return Object.entries(getServerMap(this.context))
-      .map(([href, { name }]) => new Server(vscode.Uri.parse(href), name))
+    return Object.values(getServerMap(this.context))
+      .sort(({ name: a }, { name: b }) => a.localeCompare(b))
+      .map(({ name, uri }) => new Server(Uri.parse(uri), name))
       .map((s) => new ServerNode(s));
   }
 
-  private _onDidChangeTreeData =
-    new vscode.EventEmitter<ServerTreeNodeNullable>();
+  private _onDidChangeTreeData = new EventEmitter<ServerTreeNodeNullable>();
 
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 }

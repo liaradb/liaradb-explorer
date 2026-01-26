@@ -42,18 +42,39 @@
       },
       {
         "command": "serverTree.show",
-        "title": "Show",
-        "icon": "$(refresh)"
-      },
-      {
-        "command": "serverTree.refresh",
-        "title": "Refresh",
+        "title": "LiaraDB: Show",
+        "shortTitle": "Show",
         "icon": "$(refresh)"
       },
       {
         "command": "serverTree.addServer",
-        "title": "Add Server",
+        "title": "LiaraDB: Add Server",
+        "shortTitle": "Add Server",
         "icon": "$(plus)"
+      },
+      {
+        "command": "serverTree.refresh",
+        "title": "LiaraDB: Refresh",
+        "shortTitle": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "serverTree.renameTenant",
+        "title": "LiaraDB: Rename Tenant",
+        "shortTitle": "Rename Tenant",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "serverTree.renameServer",
+        "title": "LiaraDB: Rename Server",
+        "shortTitle": "Rename Server",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "serverTree.resetData",
+        "title": "LiaraDB: Reset Data",
+        "shortTitle": "Reset Data",
+        "icon": "$(trash)"
       }
     ],
     "viewsContainers": {
@@ -66,7 +87,7 @@
         {
           "id": "liaradb-explorer",
           "title": "LiaraDB Explorer",
-          "icon": "$(refresh)"
+          "icon": "$(database)"
         }
       ]
     },
@@ -113,6 +134,16 @@
         {
           "command": "nodeDependencies.deleteEntry",
           "when": "view == nodeDependencies && viewItem == dependency"
+        },
+        {
+          "command": "serverTree.renameServer",
+          "when": "view == serverTree && viewItem == server",
+          "group": "inline"
+        },
+        {
+          "command": "serverTree.renameTenant",
+          "when": "view == serverTree && viewItem == tenant",
+          "group": "inline"
         }
       ]
     },

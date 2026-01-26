@@ -15,14 +15,21 @@ export class ServerNode extends ServerTreeNode {
   private tenants: Tenant[] = [];
 
   getTreeItem() {
-    return new vscode.TreeItem(
+    const item = new vscode.TreeItem(
       this.getName(),
       vscode.TreeItemCollapsibleState.Expanded,
     );
+    item.iconPath = new vscode.ThemeIcon("server");
+    item.contextValue = "server";
+    return item;
   }
 
   getName() {
     return this.server.getName();
+  }
+
+  getUri() {
+    return this.server.getUri();
   }
 
   async getChildren(): Promise<ServerTreeNode[]> {
@@ -42,18 +49,9 @@ export class ServerNode extends ServerTreeNode {
       try {
         this.loading = true;
         const tenants = await listTenants();
-        tenants.sort((a, b) => {
-          const an = a.getName();
-          const bn = b.getName();
-          if (an < bn) {
-            return -1;
-          }
-          if (an > bn) {
-            return 1;
-          }
-          return 0;
-        });
-        this.tenants = tenants;
+        this.tenants = tenants.sort((a, b) =>
+          a.getName().localeCompare(b.getName()),
+        );
       } finally {
         this.loading = false;
       }

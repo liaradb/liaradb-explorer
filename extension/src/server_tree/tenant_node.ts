@@ -20,10 +20,13 @@ export class TenantNode extends ServerTreeNode {
   private children: ServerTreeNode[];
 
   getTreeItem() {
-    return new vscode.TreeItem(
+    const item = new vscode.TreeItem(
       this.getName(),
       vscode.TreeItemCollapsibleState.Collapsed,
     );
+    item.iconPath = new vscode.ThemeIcon("database");
+    item.contextValue = "tenant";
+    return item;
   }
 
   getName() {

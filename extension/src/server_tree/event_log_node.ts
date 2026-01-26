@@ -9,10 +9,12 @@ export class EventLogNode extends ServerTreeNode {
   }
 
   getTreeItem() {
-    return new vscode.TreeItem(
+    const item = new vscode.TreeItem(
       "Event Log",
       vscode.TreeItemCollapsibleState.None,
     );
+    item.iconPath = new vscode.ThemeIcon("list-ordered");
+    return item;
   }
 
   async getChildren(): Promise<ServerTreeNode[]> {

@@ -1,46 +1,89 @@
-import * as vscode from "vscode";
+import { ExtensionContext, Uri, commands, window } from "vscode";
 import { ServerTreeProvider } from "./server_tree_provider";
+import { clearServerMap } from "./servers";
 
-export function activateServerTree(context: vscode.ExtensionContext) {
+export function activateServerTree(context: ExtensionContext) {
   const provider = new ServerTreeProvider(context);
 
-  vscode.window.registerTreeDataProvider("serverTree", provider);
-  vscode.window.createTreeView("serverTree", {
+  window.registerTreeDataProvider("serverTree", provider);
+  window.createTreeView("serverTree", {
     treeDataProvider: provider,
   });
 
-  vscode.commands.registerCommand("serverTree.show", () => {
-    vscode.window.createTreeView("serverTree", {
+  commands.registerCommand("serverTree.show", () => {
+    window.createTreeView("serverTree", {
       treeDataProvider: provider,
     });
   });
 
-  vscode.commands.registerCommand("serverTree.refresh", () =>
-    provider.refresh(),
-  );
+  commands.registerCommand("serverTree.refresh", () => provider.refresh());
 
-  vscode.commands.registerCommand("serverTree.addServer", async () => {
-    const name = await vscode.window.showInputBox({
-      prompt: "Server name",
-    });
-
-    if (!name) {
-      vscode.window.showErrorMessage("invalid name");
+  commands.registerCommand("serverTree.addServer", async () => {
+    const uri = await getUri(provider);
+    if (!uri) {
       return;
     }
 
-    const href = await vscode.window.showInputBox({
-      prompt: "URI",
-      value: "http://localhost:50055",
-    });
-
-    if (!href) {
-      vscode.window.showErrorMessage("invalid URI");
+    const name = await getName(uri);
+    if (name === undefined) {
       return;
     }
 
-    if (!provider.addServer(href, name)) {
-      vscode.window.showErrorMessage("invalid URI");
-    }
+    await provider.addServer(uri, name);
+  });
+
+  commands.registerCommand("serverTree.renameTenant", () => {});
+
+  commands.registerCommand("serverTree.renameServer", () => {});
+
+  commands.registerCommand("serverTree.resetData", async () => {
+    clearServerMap(context);
+    await provider.refresh();
   });
 }
+
+async function getUri(provider: ServerTreeProvider): Promise<Uri | undefined> {
+  const href = await window.showInputBox({
+    prompt: "URI",
+    value: "http://localhost:50055",
+  });
+
+  if (href === undefined) {
+    return;
+  }
+
+  if (!URL.canParse(href)) {
+    window.showErrorMessage("invalid URI");
+    return getUri(provider);
+  }
+
+  const uri = Uri.parse(href);
+  if (!provider.isUriUnique(uri)) {
+    window.showErrorMessage("Server with URI already exists");
+    return getUri(provider);
+  }
+
+  return uri;
+}
+
+async function getName(uri: Uri) {
+  const name = await window.showInputBox({
+    prompt: "Server name",
+    value: getHost(uri) === "localhost" ? "Localhost" : undefined,
+  });
+
+  if (name === undefined) {
+    return;
+  }
+
+  const trimmed = name.trim();
+
+  if (trimmed === "") {
+    window.showErrorMessage("invalid name");
+    return getName(uri);
+  }
+
+  return trimmed;
+}
+
+const getHost = (uri: Uri) => uri.authority.split(":")[0];

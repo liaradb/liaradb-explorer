@@ -2,12 +2,12 @@ import { Uri } from "vscode";
 
 export class Server {
   constructor(
-    private href: Uri,
+    private uri: Uri,
     private name: string,
   ) {}
 
-  getHref() {
-    return this.href;
+  getUri() {
+    return this.uri;
   }
 
   getName() {
