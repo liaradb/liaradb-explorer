@@ -16,5 +16,11 @@ export const addServer = (context: ExtensionContext, uri: Uri, name: string) =>
     [uri.toString()]: { name, uri: uri.toString() },
   });
 
+export const deleteServer = (context: ExtensionContext, uri: Uri) => {
+  const serverMap = getServerMap(context);
+  delete serverMap[uri.toString()];
+  return setServerMap(context, serverMap);
+};
+
 export const clearServerMap = (context: ExtensionContext) =>
   context.globalState.update(serversKey, defaultServers);

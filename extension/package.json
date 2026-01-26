@@ -56,6 +56,12 @@
         "icon": "$(plus)"
       },
       {
+        "command": "serverTree.deleteServer",
+        "title": "LiaraDB: Delete Server",
+        "shortTitle": "Delete Server",
+        "icon": "$(trash)"
+      },
+      {
         "command": "serverTree.refresh",
         "title": "LiaraDB: Refresh",
         "shortTitle": "Refresh",
@@ -142,6 +148,10 @@
           "command": "serverTree.renameServer",
           "when": "view == serverTree && viewItem == server",
           "group": "inline"
+        },
+        {
+          "command": "serverTree.deleteServer",
+          "when": "view == serverTree && viewItem == server"
         },
         {
           "command": "serverTree.renameTenant",

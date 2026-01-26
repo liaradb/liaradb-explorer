@@ -1,6 +1,7 @@
 import { ExtensionContext, Uri, commands, window } from "vscode";
 import { ServerTreeProvider } from "./server_tree_provider";
 import { clearServerMap } from "./servers";
+import { ServerNode } from "./server_node";
 
 export function activateServerTree(context: ExtensionContext) {
   const provider = new ServerTreeProvider(context);
@@ -31,6 +32,22 @@ export function activateServerTree(context: ExtensionContext) {
 
     await provider.addServer(uri, name);
   });
+
+  commands.registerCommand(
+    "serverTree.deleteServer",
+    async (node: ServerNode) => {
+      const answer = await window.showWarningMessage(
+        `Are you sure you want to delete ${node.getName()}?`,
+        { modal: true },
+        "Delete",
+      );
+      if (answer !== "Delete") {
+        return;
+      }
+
+      await provider.deleteServer(node.getUri());
+    },
+  );
 
   commands.registerCommand("serverTree.renameTenant", () => {});
 

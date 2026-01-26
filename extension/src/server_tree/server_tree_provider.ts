@@ -10,7 +10,7 @@ import { Server } from "../domain";
 
 import { ServerNode } from "./server_node";
 import { ServerTreeNode } from "./server_tree_node";
-import { addServer, getServerMap } from "./servers";
+import { addServer, deleteServer, getServerMap } from "./servers";
 
 export class ServerTreeProvider implements TreeDataProvider<ServerTreeNode> {
   constructor(private context: ExtensionContext) {
@@ -42,6 +42,11 @@ export class ServerTreeProvider implements TreeDataProvider<ServerTreeNode> {
 
   async addServer(uri: Uri, name: string) {
     await addServer(this.context, uri, name);
+    await this.refresh();
+  }
+
+  async deleteServer(uri: Uri) {
+    await deleteServer(this.context, uri);
     await this.refresh();
   }
 
