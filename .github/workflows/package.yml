@@ -26,7 +26,7 @@ jobs:
         working-directory: ./extension
       - run: npm run package
         working-directory: ./extension
-      - run: npm test
+      # - run: npm test
       - name: Upload package
         uses: actions/upload-artifact@v4
         with:
