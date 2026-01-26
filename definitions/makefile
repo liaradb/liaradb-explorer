@@ -3,7 +3,7 @@ files = \
 	-I. eventsource.proto
 
 go_out = ../definitions_go/generated
-ts_out = ../definitions_ts/src/generated
+ts_out = ../extension/src/generated
 
 .PHONY: default
 default: ts

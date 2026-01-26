@@ -1,21 +1,21 @@
 "use server";
 
-// TODO: This is likely only needed when linking locally
-import { credentials } from "definitions_ts/node_modules/@grpc/grpc-js";
+import { credentials } from "@grpc/grpc-js";
 
-import { EventSourceServiceClient } from "definitions_ts/src/generated/eventsource_grpc_pb";
-
-import {
-  serverStreamCallToPromise,
-  unaryCallToPromise,
-} from "./unaryCallToPromise";
+import { EventSourceServiceClient } from "../generated/eventsource_grpc_pb";
 import {
   CreateOutboxRequest,
   CreateTenantRequest,
   GetOutboxRequest,
   ListTenantsRequest,
   Tenant as TenantMessage,
-} from "definitions_ts/src/generated/eventsource_pb";
+} from "../generated/eventsource_pb";
+
+import {
+  serverStreamCallToPromise,
+  unaryCallToPromise,
+} from "./unaryCallToPromise";
+
 import { Tenant } from "../domain";
 
 export class EventSourceService {
