@@ -4,6 +4,9 @@
 name: VSCode Extension
 
 on:
+  push:
+    branches:
+      - "main"
   release:
     types: [created]
 

@@ -209,7 +209,7 @@
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test",
-    "package": "vsce package"
+    "package": "vsce package --skip-license --out liaradb-explorer.vsix"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.14.3",
