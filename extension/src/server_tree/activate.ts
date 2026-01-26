@@ -26,7 +26,7 @@ export function activateServerTree(context: ExtensionContext) {
       return;
     }
 
-    const name = await getName(uri);
+    const name = await getServerName(uri);
     if (name === undefined) {
       return;
     }
@@ -51,17 +51,23 @@ export function activateServerTree(context: ExtensionContext) {
   );
 
   commands.registerCommand("serverTree.addTenant", (node: ServerNode) => {
-    console.log("rename", node);
+    const name = getName("Tenant name");
+    if (name === undefined) {
+      return;
+    }
   });
 
   commands.registerCommand("serverTree.renameTenant", (node: TenantNode) => {
-    console.log("rename", node);
+    const name = getRename("Tenant name", node.getName());
+    if (name === undefined) {
+      return;
+    }
   });
 
   commands.registerCommand(
     "serverTree.renameServer",
     async (node: ServerNode) => {
-      const name = await getRename(node.getName());
+      const name = await getRename("Server name", node.getName());
       if (name === undefined) {
         return;
       }
@@ -73,7 +79,7 @@ export function activateServerTree(context: ExtensionContext) {
   commands.registerCommand(
     "serverTree.refreshServer",
     async (node: ServerNode) => {
-      console.log("refresh", node);
+      await provider.refreshServer(node);
     },
   );
 
@@ -107,7 +113,46 @@ async function getUri(provider: ServerTreeProvider): Promise<Uri | undefined> {
   return uri;
 }
 
-async function getName(uri: Uri) {
+async function getName(prompt: string) {
+  const name = await window.showInputBox({
+    prompt,
+  });
+
+  if (name === undefined) {
+    return;
+  }
+
+  const trimmed = name.trim();
+
+  if (trimmed === "") {
+    window.showErrorMessage("invalid name");
+    return getName(prompt);
+  }
+
+  return trimmed;
+}
+
+async function getRename(prompt: string, base: string) {
+  const name = await window.showInputBox({
+    prompt,
+    value: base,
+  });
+
+  if (name === undefined) {
+    return;
+  }
+
+  const trimmed = name.trim();
+
+  if (trimmed === "") {
+    window.showErrorMessage("invalid name");
+    return getRename(prompt, base);
+  }
+
+  return trimmed;
+}
+
+async function getServerName(uri: Uri) {
   const name = await window.showInputBox({
     prompt: "Server name",
     value: getHost(uri) === "localhost" ? "Localhost" : undefined,
@@ -121,27 +166,7 @@ async function getName(uri: Uri) {
 
   if (trimmed === "") {
     window.showErrorMessage("invalid name");
-    return getName(uri);
-  }
-
-  return trimmed;
-}
-
-async function getRename(base: string) {
-  const name = await window.showInputBox({
-    prompt: "Server name",
-    value: base,
-  });
-
-  if (name === undefined) {
-    return;
-  }
-
-  const trimmed = name.trim();
-
-  if (trimmed === "") {
-    window.showErrorMessage("invalid name");
-    return getRename(base);
+    return getServerName(uri);
   }
 
   return trimmed;

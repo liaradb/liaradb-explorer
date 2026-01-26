@@ -56,6 +56,11 @@ export class ServerTreeProvider implements TreeDataProvider<ServerTreeNode> {
     this._onDidChangeTreeData.fire();
   }
 
+  async refreshServer(node: ServerNode) {
+    await node.refresh();
+    this._onDidChangeTreeData.fire();
+  }
+
   listServers() {
     return Object.values(getServerMap(this.context))
       .sort(({ name: a }, { name: b }) => a.localeCompare(b))
