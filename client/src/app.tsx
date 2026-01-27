@@ -36,6 +36,7 @@ export const App = () => {
       <button
         id="send"
         onClick={async () => {
+          const { outboxId, tenantId } = globalParams;
           try {
             const result = await getOutbox(messenger, outboxId, tenantId);
             setResult([...results, result]);

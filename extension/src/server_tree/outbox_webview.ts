@@ -33,7 +33,7 @@ export function activateOutboxWebview(context: ExtensionContext) {
       );
 
       // And set its HTML content
-      panel.webview.html = getWebviewContent(webview);
+      panel.webview.html = getWebviewContent(webview, tenant, outbox);
 
       // Handle messages from the webview
       panel.webview.onDidReceiveMessage(
@@ -65,7 +65,7 @@ export function activateOutboxWebview(context: ExtensionContext) {
   };
 }
 
-function getWebviewContent(webview: Uri) {
+function getWebviewContent(webview: Uri, tenant: Tenant, outbox: Outbox) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,6 +75,12 @@ function getWebviewContent(webview: Uri) {
 </head>
 <body>
     <div id="app"></div>
+    <Script type="application/javascript">
+    const globalParams = {
+        tenantId: "${tenant.getId()}",
+        outboxId: "${outbox.getId()}",
+    };
+    </script>
     <script src="${webview}"></script>
 </body>
 </html>`;
