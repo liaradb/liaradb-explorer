@@ -1,4 +1,5 @@
 import React, { FC, MouseEventHandler, ReactNode } from "react";
+import styled from "styled-components";
 
 export const Button: FC<{
   block?: boolean;
@@ -12,13 +13,17 @@ export const Button: FC<{
   }
 
   return (
-    <button
+    <StyledButton
       type="button"
       id={id}
       className={classNames.join(" ")}
       onClick={onClick}
     >
       {children}
-    </button>
+    </StyledButton>
   );
 };
+
+const StyledButton = styled.button`
+  gap: 8px;
+`;

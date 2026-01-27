@@ -32,8 +32,23 @@ export function activateOutboxWebview(context: ExtensionContext) {
         Uri.file(path.join(__dirname, "..", "..", "clientdist", "webview.js")),
       );
 
+      const codiconsUri = panel.webview.asWebviewUri(
+        Uri.joinPath(
+          context.extensionUri,
+          "node_modules",
+          "@vscode/codicons",
+          "dist",
+          "codicon.css",
+        ),
+      );
+
       // And set its HTML content
-      panel.webview.html = getWebviewContent(webview, tenant, outbox);
+      panel.webview.html = getWebviewContent(
+        webview,
+        codiconsUri,
+        tenant,
+        outbox,
+      );
 
       // Handle messages from the webview
       panel.webview.onDidReceiveMessage(
@@ -65,13 +80,19 @@ export function activateOutboxWebview(context: ExtensionContext) {
   };
 }
 
-function getWebviewContent(webview: Uri, tenant: Tenant, outbox: Outbox) {
+function getWebviewContent(
+  webview: Uri,
+  codiconsUri: Uri,
+  tenant: Tenant,
+  outbox: Outbox,
+) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cat Coding</title>
+    <link href="${codiconsUri}" rel="stylesheet" />
 </head>
 <body>
     <div id="app"></div>

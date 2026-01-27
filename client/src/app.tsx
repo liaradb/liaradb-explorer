@@ -48,7 +48,7 @@ export const App = () => {
             }
           }}
         >
-          Button
+          <i className="codicon codicon-account" /> Button
         </Button>
       </FormContainer>
       <ul>
@@ -70,7 +70,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
 `;
 
