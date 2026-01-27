@@ -1,0 +1,150 @@
+import path from "path";
+import {
+  ExtensionContext,
+  Uri,
+  ViewColumn,
+  Webview,
+  WebviewPanel,
+  window,
+} from "vscode";
+
+import { EventSourceService } from "../service";
+
+export function activateOutboxWebview(context: ExtensionContext) {
+  let currentPanel: WebviewPanel | undefined = undefined;
+
+  function run() {
+    if (currentPanel) {
+      currentPanel.reveal(ViewColumn.One);
+    } else {
+      // Create and show panel
+      const panel = window.createWebviewPanel(
+        "outboxWebview",
+        "Outbox",
+        ViewColumn.One,
+        {
+          enableScripts: true,
+        },
+      );
+
+      const webview = panel.webview.asWebviewUri(
+        Uri.file(path.join(__dirname, "..", "clientdist", "webview.js")),
+      );
+
+      // And set its HTML content
+      panel.webview.html = getWebviewContent(webview);
+
+      // Handle messages from the webview
+      panel.webview.onDidReceiveMessage(
+        (message: Message) => {
+          switch (message.command) {
+            case "alert":
+              window.showErrorMessage(message.text);
+              return;
+            case "request":
+              window.showErrorMessage(message.data + message.id);
+              if (currentPanel?.webview) {
+                handleRequest(currentPanel.webview, message);
+              }
+          }
+        },
+        undefined,
+        context.subscriptions,
+      );
+      panel.onDidDispose(
+        () => {
+          currentPanel = undefined;
+        },
+        undefined,
+        context.subscriptions,
+      );
+
+      currentPanel = panel;
+    }
+  }
+}
+
+function getWebviewContent(webview: Uri) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Coding</title>
+</head>
+<body>
+    <div id="app"></div>
+    <script src="${webview}"></script>
+</body>
+</html>`;
+}
+
+const handleRequest = async (webview: Webview, request: RequestMessage) => {
+  const service = new EventSourceService("localhost:50055");
+  try {
+    switch (request.data.method) {
+      case "getOutbox":
+        const outbox = await service.getOutbox(
+          request.data.message.outboxId,
+          request.data.message.tenantId,
+        );
+
+        send(webview, request.id, outbox);
+        break;
+    }
+  } catch (err) {
+    sendError(webview, request.id, `${err}`);
+  }
+};
+
+const send = (webview: Webview, id: string, message: ResponseData) => {
+  webview.postMessage({
+    command: "response",
+    id,
+    data: message,
+  });
+};
+
+const sendError = (webview: Webview, id: string, error: string) => {
+  webview.postMessage({
+    command: "response",
+    id,
+    error,
+  });
+};
+
+export type Message = UnknownMessage | RequestMessage;
+
+export type UnknownMessage = {
+  command: "alert";
+  text: string;
+};
+
+export type RequestMessage = {
+  command: "request";
+  id: string;
+  data: GetOutboxRequest;
+};
+
+export type ResponseMessage = {
+  command: "response";
+  id: string;
+  data: ResponseData;
+  error: string | undefined;
+};
+
+type ResponseData = GetOutboxResponse;
+
+type GetOutboxRequest = {
+  method: "getOutbox";
+  message: {
+    outboxId: string;
+    tenantId: string;
+  };
+};
+
+type GetOutboxResponse = {
+  globalVersion: number;
+  low: number;
+  high: number;
+};
