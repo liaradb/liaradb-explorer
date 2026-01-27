@@ -5,6 +5,7 @@ import "./styles";
 
 import { useMessenger } from "./messenger_context";
 import { Messenger } from "./messenger";
+import { Button } from "./components";
 
 export const App = () => {
   const messenger = useMessenger();
@@ -35,10 +36,8 @@ export const App = () => {
             setTenantId(event.target.value);
           }}
         />
-        <button
-          id="send"
-          type="button"
-          className="vscode-button block"
+        <Button
+          block
           onClick={async () => {
             const { outboxId, tenantId } = globalParams;
             try {
@@ -50,7 +49,7 @@ export const App = () => {
           }}
         >
           Button
-        </button>
+        </Button>
       </FormContainer>
       <ul>
         {results.map((r, i) => (
