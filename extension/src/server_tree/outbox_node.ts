@@ -4,7 +4,10 @@ import { Outbox, Tenant } from "../domain";
 import { ServerTreeNode } from "./server_tree_node";
 
 export class OutboxNode extends ServerTreeNode {
-  constructor(private outbox: Outbox) {
+  constructor(
+    private tenant: Tenant,
+    private outbox: Outbox,
+  ) {
     super();
   }
 
@@ -20,5 +23,13 @@ export class OutboxNode extends ServerTreeNode {
 
   async getChildren(): Promise<ServerTreeNode[]> {
     return [];
+  }
+
+  getOutbox() {
+    return this.outbox;
+  }
+
+  getTenant() {
+    return this.tenant;
   }
 }

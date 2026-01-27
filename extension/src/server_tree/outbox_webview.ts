@@ -9,11 +9,12 @@ import {
 } from "vscode";
 
 import { EventSourceService } from "../service";
+import { Outbox, Tenant } from "../domain";
 
 export function activateOutboxWebview(context: ExtensionContext) {
   let currentPanel: WebviewPanel | undefined = undefined;
 
-  function run() {
+  return function run(tenant: Tenant, outbox: Outbox) {
     if (currentPanel) {
       currentPanel.reveal(ViewColumn.One);
     } else {
@@ -28,7 +29,7 @@ export function activateOutboxWebview(context: ExtensionContext) {
       );
 
       const webview = panel.webview.asWebviewUri(
-        Uri.file(path.join(__dirname, "..", "clientdist", "webview.js")),
+        Uri.file(path.join(__dirname, "..", "..", "clientdist", "webview.js")),
       );
 
       // And set its HTML content
@@ -61,7 +62,7 @@ export function activateOutboxWebview(context: ExtensionContext) {
 
       currentPanel = panel;
     }
-  }
+  };
 }
 
 function getWebviewContent(webview: Uri) {

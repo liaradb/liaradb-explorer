@@ -41,7 +41,7 @@ export class OutboxesNode extends ServerTreeNode {
       }
     }
 
-    return this.outboxes.map((o) => new OutboxNode(o));
+    return this.outboxes.map((o) => new OutboxNode(this.tenant, o));
   }
 
   async getOutboxes() {
