@@ -47,7 +47,9 @@
     "@types/vscode-webview": "^1.57.5",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
+    "css-loader": "^7.1.3",
     "eslint": "^9.39.2",
+    "style-loader": "^4.0.0",
     "ts-loader": "^9.5.4",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.52.0",
@@ -55,8 +57,10 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
+    "@vscode-elements/elements-lite": "^0.4.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "styled-components": "^6.3.8",
     "vscode-webview": "^1.0.1-beta.1"
   }
 }

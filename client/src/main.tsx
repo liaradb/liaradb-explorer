@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { Root } from "react-dom/client";
+import { ThemeProvider } from "styled-components";
 
 import { MessengerProvider } from "./messenger_context";
 import { VSCode, VSCodeProvider } from "./vscode_context";
@@ -13,7 +14,9 @@ const Main: FC<{ vscode: VSCode }> = ({ vscode }) => {
   return (
     <VSCodeProvider vscode={vscode}>
       <MessengerProvider>
-        <App />
+        <ThemeProvider theme={{}}>
+          <App />
+        </ThemeProvider>
       </MessengerProvider>
     </VSCodeProvider>
   );

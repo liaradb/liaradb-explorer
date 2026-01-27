@@ -41,6 +41,10 @@ const extensionConfig = {
           },
         ],
       },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
     ],
   },
   devtool: "nosources-source-map",

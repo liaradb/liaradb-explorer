@@ -102,6 +102,12 @@
         "title": "LiaraDB: Reset Data",
         "shortTitle": "Reset Data",
         "icon": "$(trash)"
+      },
+      {
+        "command": "serverTree.viewOutbox",
+        "title": "LiaraDB: View Outbox",
+        "shortTitle": "View Outbox",
+        "icon": "$(debug-start)"
       }
     ],
     "viewsContainers": {
@@ -188,6 +194,11 @@
         {
           "command": "serverTree.deleteTenant",
           "when": "view == serverTree && viewItem == tenant"
+        },
+        {
+          "command": "serverTree.viewOutbox",
+          "when": "view == serverTree && viewItem == outbox",
+          "group": "inline"
         }
       ]
     },

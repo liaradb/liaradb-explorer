@@ -1,4 +1,7 @@
 import React, { FC, useState } from "react";
+import styled from "styled-components";
+
+import "./styles";
 
 import { useMessenger } from "./messenger_context";
 import { Messenger } from "./messenger";
@@ -13,41 +16,42 @@ export const App = () => {
   const [tenantId, setTenantId] = useState("");
 
   return (
-    <>
-      <img
-        src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif"
-        width="300"
-      />
-      <h1 id="lines-of-code-counter">0</h1>
-      <input
-        type="text"
-        value={outboxId}
-        onChange={(event) => {
-          setOutboxId(event.target.value);
-        }}
-      />
-      <input
-        type="text"
-        value={tenantId}
-        onChange={(event) => {
-          setTenantId(event.target.value);
-        }}
-      />
-      <button
-        id="send"
-        onClick={async () => {
-          const { outboxId, tenantId } = globalParams;
-          try {
-            const result = await getOutbox(messenger, outboxId, tenantId);
-            setResult([...results, result]);
-          } catch (err) {
-            setErrors([...errors, `${err}`]);
-          }
-        }}
-      >
-        Button
-      </button>
-      <h1>Hello, world</h1>
+    <Container>
+      <h1>Outbox</h1>
+      <FormContainer>
+        <input
+          type="text"
+          className="vscode-textfield"
+          value={outboxId}
+          onChange={(event) => {
+            setOutboxId(event.target.value);
+          }}
+        />
+        <input
+          type="text"
+          className="vscode-textfield"
+          value={tenantId}
+          onChange={(event) => {
+            setTenantId(event.target.value);
+          }}
+        />
+        <button
+          id="send"
+          type="button"
+          className="vscode-button block"
+          onClick={async () => {
+            const { outboxId, tenantId } = globalParams;
+            try {
+              const result = await getOutbox(messenger, outboxId, tenantId);
+              setResult([...results, result]);
+            } catch (err) {
+              setErrors([...errors, `${err}`]);
+            }
+          }}
+        >
+          Button
+        </button>
+      </FormContainer>
       <ul>
         {results.map((r, i) => (
           <li key={i}>{`Outbox: ${r.globalVersion}, ${r.low}, ${r.high}`}</li>
@@ -59,9 +63,26 @@ export const App = () => {
           <li key={i}>{`${e}`}</li>
         ))}
       </ul>
-    </>
+    </Container>
   );
 };
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const FormContainer = styled.div`
+  max-width: 1024px;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px;
+`;
 
 const getOutbox = async (
   messenger: Messenger,
