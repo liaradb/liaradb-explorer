@@ -1,19 +1,20 @@
 import * as vscode from "vscode";
 
-import { Tenant } from "../domain";
+import { Outbox, Tenant } from "../domain";
 import { ServerTreeNode } from "./server_tree_node";
 
 export class OutboxNode extends ServerTreeNode {
-  constructor(private tenant: Tenant) {
+  constructor(private outbox: Outbox) {
     super();
   }
 
   getTreeItem() {
     const item = new vscode.TreeItem(
-      "Outbox",
+      `Partition ${this.outbox.getLow()} - ${this.outbox.getHigh()}`,
       vscode.TreeItemCollapsibleState.None,
     );
-    item.iconPath = new vscode.ThemeIcon("inbox");
+    item.iconPath = new vscode.ThemeIcon("checklist");
+    item.contextValue = "outbox";
     return item;
   }
 

@@ -53,7 +53,7 @@ export class ServerNode extends ServerTreeNode {
       }
     }
 
-    return this.tenants.map((t) => new TenantNode(t));
+    return this.tenants.map((t) => new TenantNode(this.service, t));
   }
 
   async getTenants() {

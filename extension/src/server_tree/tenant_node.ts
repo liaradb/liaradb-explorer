@@ -3,20 +3,24 @@ import * as vscode from "vscode";
 import { Tenant } from "../domain";
 import { ServerTreeNode } from "./server_tree_node";
 import { EventLogNode } from "./event_log_node";
-import { OutboxNode } from "./outbox_node";
+import { OutboxesNode } from "./outboxes_node";
+import { EventSourceService } from "../service";
 
 export class TenantNode extends ServerTreeNode {
-  constructor(private tenant: Tenant) {
+  constructor(
+    private service: EventSourceService,
+    private tenant: Tenant,
+  ) {
     super();
 
     this.eventLog = new EventLogNode(this.tenant);
-    this.outbox = new OutboxNode(this.tenant);
+    this.outbox = new OutboxesNode(service, this.tenant);
 
     this.children = [this.eventLog, this.outbox];
   }
 
   private eventLog: EventLogNode;
-  private outbox: OutboxNode;
+  private outbox: OutboxesNode;
   private children: ServerTreeNode[];
 
   getTreeItem() {

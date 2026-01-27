@@ -7,7 +7,9 @@ import {
   CreateOutboxRequest,
   CreateTenantRequest,
   GetOutboxRequest,
+  ListOutboxesRequest,
   ListTenantsRequest,
+  Outbox as OutboxMessage,
   Tenant as TenantMessage,
 } from "../generated/eventsource_pb";
 
@@ -16,7 +18,7 @@ import {
   unaryCallToPromise,
 } from "./unaryCallToPromise";
 
-import { Tenant } from "../domain";
+import { Outbox, Tenant } from "../domain";
 
 export class EventSourceService {
   constructor(private href: string) {
@@ -71,6 +73,15 @@ export class EventSourceService {
     return response.getTenantId();
   }
 
+  async listOutboxes(tenantId: string) {
+    const request = new ListOutboxesRequest();
+    request.setTenantId(tenantId);
+
+    const response = await this.service.listOutboxes(request);
+
+    return response.map(this.messageToOutbox);
+  }
+
   async listTenants() {
     const request = new ListTenantsRequest();
 
@@ -78,6 +89,9 @@ export class EventSourceService {
 
     return response.map(this.messageToTenant);
   }
+
+  messageToOutbox = (o: OutboxMessage) =>
+    new Outbox(o.getOutboxId(), o.getGlobalVersion(), o.getLow(), o.getHigh());
 
   messageToTenant = (t: TenantMessage) =>
     new Tenant(t.getTenantId(), t.getName());
@@ -99,6 +113,7 @@ function createService(client: EventSourceServiceClient) {
     getByOutbox: serverStreamCallToPromise(client.getByOutbox.bind(client)),
     getOutbox: unaryCallToPromise(client.getOutbox.bind(client)),
     getTenant: unaryCallToPromise(client.getTenant.bind(client)),
+    listOutboxes: serverStreamCallToPromise(client.listOutboxes.bind(client)),
     listTenants: serverStreamCallToPromise(client.listTenants.bind(client)),
     renameTenant: unaryCallToPromise(client.renameTenant.bind(client)),
     testIdempotency: unaryCallToPromise(client.testIdempotency.bind(client)),
