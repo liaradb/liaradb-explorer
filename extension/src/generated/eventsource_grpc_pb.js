@@ -192,6 +192,17 @@ function deserialize_liara_GetTenantResponse(buffer_arg) {
   return eventsource_pb.GetTenantResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_liara_ListOutboxesRequest(arg) {
+  if (!(arg instanceof eventsource_pb.ListOutboxesRequest)) {
+    throw new Error('Expected argument of type liara.ListOutboxesRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_liara_ListOutboxesRequest(buffer_arg) {
+  return eventsource_pb.ListOutboxesRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_liara_ListTenantsRequest(arg) {
   if (!(arg instanceof eventsource_pb.ListTenantsRequest)) {
     throw new Error('Expected argument of type liara.ListTenantsRequest');
@@ -201,6 +212,17 @@ function serialize_liara_ListTenantsRequest(arg) {
 
 function deserialize_liara_ListTenantsRequest(buffer_arg) {
   return eventsource_pb.ListTenantsRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_liara_Outbox(arg) {
+  if (!(arg instanceof eventsource_pb.Outbox)) {
+    throw new Error('Expected argument of type liara.Outbox');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_liara_Outbox(buffer_arg) {
+  return eventsource_pb.Outbox.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_liara_RenameTenantRequest(arg) {
@@ -424,6 +446,17 @@ var EventSourceServiceService = exports.EventSourceServiceService = {
     requestDeserialize: deserialize_liara_GetTenantRequest,
     responseSerialize: serialize_liara_GetTenantResponse,
     responseDeserialize: deserialize_liara_GetTenantResponse,
+  },
+  listOutboxes: {
+    path: '/liara.EventSourceService/ListOutboxes',
+    requestStream: false,
+    responseStream: true,
+    requestType: eventsource_pb.ListOutboxesRequest,
+    responseType: eventsource_pb.Outbox,
+    requestSerialize: serialize_liara_ListOutboxesRequest,
+    requestDeserialize: deserialize_liara_ListOutboxesRequest,
+    responseSerialize: serialize_liara_Outbox,
+    responseDeserialize: deserialize_liara_Outbox,
   },
   listTenants: {
     path: '/liara.EventSourceService/ListTenants',

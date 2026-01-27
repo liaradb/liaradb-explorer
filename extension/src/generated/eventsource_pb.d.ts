@@ -671,6 +671,55 @@ export namespace GetTenantResponse {
     }
 }
 
+export class ListOutboxesRequest extends jspb.Message { 
+    getTenantId(): string;
+    setTenantId(value: string): ListOutboxesRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ListOutboxesRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: ListOutboxesRequest): ListOutboxesRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ListOutboxesRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ListOutboxesRequest;
+    static deserializeBinaryFromReader(message: ListOutboxesRequest, reader: jspb.BinaryReader): ListOutboxesRequest;
+}
+
+export namespace ListOutboxesRequest {
+    export type AsObject = {
+        tenantId: string,
+    }
+}
+
+export class Outbox extends jspb.Message { 
+    getOutboxId(): string;
+    setOutboxId(value: string): Outbox;
+    getGlobalVersion(): number;
+    setGlobalVersion(value: number): Outbox;
+    getLow(): number;
+    setLow(value: number): Outbox;
+    getHigh(): number;
+    setHigh(value: number): Outbox;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Outbox.AsObject;
+    static toObject(includeInstance: boolean, msg: Outbox): Outbox.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Outbox, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Outbox;
+    static deserializeBinaryFromReader(message: Outbox, reader: jspb.BinaryReader): Outbox;
+}
+
+export namespace Outbox {
+    export type AsObject = {
+        outboxId: string,
+        globalVersion: number,
+        low: number,
+        high: number,
+    }
+}
+
 export class ListTenantsRequest extends jspb.Message { 
 
     serializeBinary(): Uint8Array;
