@@ -5,7 +5,7 @@ import "./styles";
 
 import { useMessenger } from "./messenger_context";
 import { Messenger } from "./messenger";
-import { Button, Icon } from "./components";
+import { Button, Icon, TextInput } from "./components";
 
 export const App = () => {
   const messenger = useMessenger();
@@ -20,17 +20,13 @@ export const App = () => {
     <Container>
       <h1>Outbox</h1>
       <FormContainer>
-        <input
-          type="text"
-          className="vscode-textfield"
+        <TextInput
           value={outboxId}
           onChange={(event) => {
             setOutboxId(event.target.value);
           }}
         />
-        <input
-          type="text"
-          className="vscode-textfield"
+        <TextInput
           value={tenantId}
           onChange={(event) => {
             setTenantId(event.target.value);
