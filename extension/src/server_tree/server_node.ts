@@ -19,7 +19,7 @@ export class ServerNode extends ServerTreeNode {
   getTreeItem() {
     const item = new vscode.TreeItem(
       this.getName(),
-      vscode.TreeItemCollapsibleState.Expanded,
+      vscode.TreeItemCollapsibleState.Collapsed,
     );
     item.iconPath = new vscode.ThemeIcon("server");
     item.contextValue = "server";
@@ -46,8 +46,7 @@ export class ServerNode extends ServerTreeNode {
         this.tenants = await this.getTenants();
         this.loaded = true;
       } catch (err) {
-        // TODO: Show alert?
-        console.error(err);
+        vscode.window.showErrorMessage(`${err}`);
       } finally {
         this.loading = false;
       }

@@ -34,8 +34,7 @@ export class OutboxesNode extends ServerTreeNode {
         this.outboxes = await this.getOutboxes();
         this.loaded = true;
       } catch (err) {
-        // TODO: Show alert?
-        console.error(err);
+        vscode.window.showErrorMessage(`${err}`);
       } finally {
         this.loading = false;
       }
