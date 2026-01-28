@@ -5,7 +5,7 @@ import "./styles";
 
 import { useMessenger } from "./messenger_context";
 import { Messenger } from "./messenger";
-import { Button } from "./components";
+import { Button, Icon } from "./components";
 
 export const App = () => {
   const messenger = useMessenger();
@@ -48,7 +48,7 @@ export const App = () => {
             }
           }}
         >
-          <i className="codicon codicon-account" /> Button
+          <Icon type="account" /> Button
         </Button>
       </FormContainer>
       <ul>
