@@ -4,12 +4,17 @@ import styled from "styled-components";
 export const Button: FC<{
   block?: boolean;
   children?: ReactNode | ReactNode[];
+  disabled?: boolean;
   id?: string;
-  onClick: MouseEventHandler;
-}> = ({ block, children, id, onClick }) => {
+  onClick?: MouseEventHandler;
+  secondary?: boolean;
+}> = ({ block, children, disabled, id, onClick, secondary }) => {
   const classNames = ["vscode-button"];
   if (block) {
     classNames.push("block");
+  }
+  if (secondary) {
+    classNames.push("secondary");
   }
 
   return (
@@ -17,6 +22,7 @@ export const Button: FC<{
       type="button"
       id={id}
       className={classNames.join(" ")}
+      disabled={disabled}
       onClick={onClick}
     >
       {children}

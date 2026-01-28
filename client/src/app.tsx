@@ -5,7 +5,7 @@ import "./styles";
 
 import { useMessenger } from "./messenger_context";
 import { Messenger } from "./messenger";
-import { Button, Icon, TextInput } from "./components";
+import { ActionButton, Button, Icon, TextField } from "./components";
 
 export const App = () => {
   const messenger = useMessenger();
@@ -20,13 +20,16 @@ export const App = () => {
     <Container>
       <h1>Outbox</h1>
       <FormContainer>
-        <TextInput
+        <TextField
+          label="Outbox Id"
+          after={<ActionButton title="Math Case" icon="case-sensitive" />}
           value={outboxId}
           onChange={(event) => {
             setOutboxId(event.target.value);
           }}
         />
-        <TextInput
+        <TextField
+          label="Tenant Id"
           value={tenantId}
           onChange={(event) => {
             setTenantId(event.target.value);
@@ -47,6 +50,36 @@ export const App = () => {
           <Icon type="account" /> Button
         </Button>
       </FormContainer>
+      <div className="vscode-form-group">
+        <label htmlFor="textfield1" className="vscode-label">
+          Label example
+        </label>{" "}
+        <div className="vscode-textfield">
+          <i className="codicon codicon-search"></i>
+          <input type="text" required />
+          <button className="vscode-action-button" title="Math Case">
+            <i className="codicon codicon-case-sensitive"></i>
+          </button>
+          <button className="vscode-action-button" title="Math Whole Word">
+            <i className="codicon codicon-whole-word"></i>
+          </button>
+          <button
+            className="vscode-action-button"
+            title="Use Regular Expression"
+          >
+            <i className="codicon codicon-regex"></i>
+          </button>
+        </div>
+        <div className="vscode-form-helper">
+          <p>
+            Lorem ipsum <code>let dolor = sit amet</code>, consectetur
+            adipiscing elit.
+            <span className="error">Suspendisse</span> faucibus imperdiet
+            sapien, a gravida <a href="#">dolor</a>.
+          </p>
+        </div>
+      </div>
+
       <ul>
         {results.map((r, i) => (
           <li key={i}>{`Outbox: ${r.globalVersion}, ${r.low}, ${r.high}`}</li>
@@ -75,8 +108,10 @@ const FormContainer = styled.div`
   min-width: 250px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin: 8px;
+  gap: 15px;
+  & .vscode-form-group {
+    margin: 0;
+  }
 `;
 
 const getOutbox = async (
