@@ -28,7 +28,10 @@ export function activateServerTree(context: ExtensionContext) {
       return;
     }
 
-    const name = await getServerName(uri);
+    const name = await getName(
+      "Server name",
+      getHost(uri) === "localhost" ? "Localhost" : undefined,
+    );
     if (name === undefined) {
       return;
     }
@@ -60,7 +63,7 @@ export function activateServerTree(context: ExtensionContext) {
   });
 
   commands.registerCommand("serverTree.renameTenant", (node: TenantNode) => {
-    const name = getRename("Tenant name", node.getName());
+    const name = getName("Tenant name", node.getName());
     if (name === undefined) {
       return;
     }
@@ -83,7 +86,7 @@ export function activateServerTree(context: ExtensionContext) {
   commands.registerCommand(
     "serverTree.renameServer",
     async (node: ServerNode) => {
-      const name = await getRename("Server name", node.getName());
+      const name = await getName("Server name", node.getName());
       if (name === undefined) {
         return;
       }
@@ -114,83 +117,36 @@ async function getUri(provider: ServerTreeProvider): Promise<Uri | undefined> {
   const href = await window.showInputBox({
     prompt: "URI",
     value: "http://localhost:50055",
+    validateInput: (href) => {
+      if (!URL.canParse(href)) {
+        return "invalid URI";
+      }
+
+      if (!provider.isUriUnique(Uri.parse(href))) {
+        return "Server with URI already exists";
+      }
+    },
   });
 
   if (href === undefined) {
     return;
   }
 
-  if (!URL.canParse(href)) {
-    window.showErrorMessage("invalid URI");
-    return getUri(provider);
-  }
-
-  const uri = Uri.parse(href);
-  if (!provider.isUriUnique(uri)) {
-    window.showErrorMessage("Server with URI already exists");
-    return getUri(provider);
-  }
-
-  return uri;
+  return Uri.parse(href);
 }
 
-async function getName(prompt: string) {
+async function getName(prompt: string, value?: string) {
   const name = await window.showInputBox({
     prompt,
+    value,
+    validateInput: (name) => {
+      if (name.trim() === "") {
+        return "invalid name";
+      }
+    },
   });
 
-  if (name === undefined) {
-    return;
-  }
-
-  const trimmed = name.trim();
-
-  if (trimmed === "") {
-    window.showErrorMessage("invalid name");
-    return getName(prompt);
-  }
-
-  return trimmed;
-}
-
-async function getRename(prompt: string, base: string) {
-  const name = await window.showInputBox({
-    prompt,
-    value: base,
-  });
-
-  if (name === undefined) {
-    return;
-  }
-
-  const trimmed = name.trim();
-
-  if (trimmed === "") {
-    window.showErrorMessage("invalid name");
-    return getRename(prompt, base);
-  }
-
-  return trimmed;
-}
-
-async function getServerName(uri: Uri) {
-  const name = await window.showInputBox({
-    prompt: "Server name",
-    value: getHost(uri) === "localhost" ? "Localhost" : undefined,
-  });
-
-  if (name === undefined) {
-    return;
-  }
-
-  const trimmed = name.trim();
-
-  if (trimmed === "") {
-    window.showErrorMessage("invalid name");
-    return getServerName(uri);
-  }
-
-  return trimmed;
+  return name?.trim();
 }
 
 const getHost = (uri: Uri) => uri.authority.split(":")[0];
