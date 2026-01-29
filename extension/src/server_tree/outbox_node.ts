@@ -43,7 +43,7 @@ export class OutboxNode extends ServerTreeNode {
 
   openWebview(context: ExtensionContext) {
     if (this.webview) {
-      this.webview.reveal();
+      this.webview.init();
       return;
     }
 

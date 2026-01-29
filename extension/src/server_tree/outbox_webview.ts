@@ -77,7 +77,7 @@ export class OutboxWebview {
     }
   }
 
-  reveal() {
+  private reveal() {
     if (this.panel) {
       this.panel.reveal(ViewColumn.Active);
       return true;
