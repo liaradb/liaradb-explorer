@@ -11,6 +11,84 @@ import {
 import { EventSourceService } from "../service";
 import { Outbox, Tenant } from "../domain";
 
+export class OutboxWebview {
+  panel?: WebviewPanel;
+
+  constructor(
+    private context: ExtensionContext,
+    private tenant: Tenant,
+    private outbox: Outbox,
+  ) {}
+
+  init() {
+    if (this.reveal()) {
+      return;
+    }
+
+    this.panel = window.createWebviewPanel(
+      "outboxWebview",
+      "Outbox",
+      ViewColumn.Active,
+      {
+        enableScripts: true,
+      },
+    );
+
+    const webview = this.panel.webview.asWebviewUri(
+      Uri.file(path.join(__dirname, "..", "..", "clientdist", "webview.js")),
+    );
+
+    const codiconsUri = this.panel.webview.asWebviewUri(
+      Uri.joinPath(
+        this.context.extensionUri,
+        "node_modules",
+        "@vscode/codicons",
+        "dist",
+        "codicon.css",
+      ),
+    );
+
+    // And set its HTML content
+    this.panel.webview.html = getWebviewContent(
+      webview,
+      codiconsUri,
+      this.tenant,
+      this.outbox,
+    );
+
+    // Handle messages from the webview
+    this.panel.webview.onDidReceiveMessage(
+      this.onMessage,
+      this,
+      this.context.subscriptions,
+    );
+
+    this.panel.onDidDispose(this.dispose, this, this.context.subscriptions);
+  }
+
+  // Handle messages from the webview
+  onMessage(message: Message) {
+    switch (message.command) {
+      case "request":
+        if (this.panel?.webview) {
+          handleRequest(this.panel.webview, message);
+        }
+    }
+  }
+
+  reveal() {
+    if (this.panel) {
+      this.panel.reveal(ViewColumn.Active);
+      return true;
+    }
+    return false;
+  }
+
+  dispose() {
+    this.panel = undefined;
+  }
+}
+
 export function activateOutboxWebview(context: ExtensionContext) {
   let currentPanel: WebviewPanel | undefined = undefined;
 
