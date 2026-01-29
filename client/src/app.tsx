@@ -13,8 +13,8 @@ export const App = () => {
   const [results, setResult] = useState<GetOutboxResponse[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
 
-  const [outboxId, setOutboxId] = useState("");
-  const [tenantId, setTenantId] = useState("");
+  const [outboxId, setOutboxId] = useState(globalParams.outboxId);
+  const [tenantId, setTenantId] = useState(globalParams.tenantId);
 
   return (
     <Container>

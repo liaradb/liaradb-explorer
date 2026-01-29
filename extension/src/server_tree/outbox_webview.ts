@@ -31,6 +31,7 @@ export class OutboxWebview {
       ViewColumn.Active,
       {
         enableScripts: true,
+        retainContextWhenHidden: true,
       },
     );
 
@@ -87,72 +88,6 @@ export class OutboxWebview {
   dispose() {
     this.panel = undefined;
   }
-}
-
-export function activateOutboxWebview(context: ExtensionContext) {
-  let currentPanel: WebviewPanel | undefined = undefined;
-
-  return function run(tenant: Tenant, outbox: Outbox) {
-    if (currentPanel) {
-      currentPanel.reveal(ViewColumn.One);
-      return;
-    }
-
-    // Create and show panel
-    const panel = window.createWebviewPanel(
-      "outboxWebview",
-      "Outbox",
-      ViewColumn.One,
-      {
-        enableScripts: true,
-      },
-    );
-
-    const webview = panel.webview.asWebviewUri(
-      Uri.file(path.join(__dirname, "..", "..", "clientdist", "webview.js")),
-    );
-
-    const codiconsUri = panel.webview.asWebviewUri(
-      Uri.joinPath(
-        context.extensionUri,
-        "node_modules",
-        "@vscode/codicons",
-        "dist",
-        "codicon.css",
-      ),
-    );
-
-    // And set its HTML content
-    panel.webview.html = getWebviewContent(
-      webview,
-      codiconsUri,
-      tenant,
-      outbox,
-    );
-
-    // Handle messages from the webview
-    panel.webview.onDidReceiveMessage(
-      (message: Message) => {
-        switch (message.command) {
-          case "request":
-            if (currentPanel?.webview) {
-              handleRequest(currentPanel.webview, message);
-            }
-        }
-      },
-      undefined,
-      context.subscriptions,
-    );
-    panel.onDidDispose(
-      () => {
-        currentPanel = undefined;
-      },
-      undefined,
-      context.subscriptions,
-    );
-
-    currentPanel = panel;
-  };
 }
 
 function getWebviewContent(

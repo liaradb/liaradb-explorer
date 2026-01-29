@@ -4,7 +4,6 @@ import { clearServerMap } from "./servers";
 import { ServerNode } from "./server_node";
 import { TenantNode } from "./tenant_node";
 import { OutboxNode } from "./outbox_node";
-import { activateOutboxWebview } from "./outbox_webview";
 
 export function activateServerTree(context: ExtensionContext) {
   const provider = new ServerTreeProvider(context);
@@ -107,9 +106,8 @@ export function activateServerTree(context: ExtensionContext) {
     await provider.refresh();
   });
 
-  const outboxWebview = activateOutboxWebview(context);
   commands.registerCommand("serverTree.viewOutbox", (node: OutboxNode) => {
-    outboxWebview(node.getTenant(), node.getOutbox());
+    node.openWebview(context);
   });
 }
 

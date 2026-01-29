@@ -1,7 +1,13 @@
-import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
+import {
+  ExtensionContext,
+  ThemeIcon,
+  TreeItem,
+  TreeItemCollapsibleState,
+} from "vscode";
 
 import { Outbox, Tenant } from "../domain";
 import { ServerTreeNode } from "./server_tree_node";
+import { OutboxWebview } from "./outbox_webview";
 
 export class OutboxNode extends ServerTreeNode {
   constructor(
@@ -10,6 +16,8 @@ export class OutboxNode extends ServerTreeNode {
   ) {
     super();
   }
+
+  webview?: OutboxWebview;
 
   getTreeItem() {
     const item = new TreeItem(
@@ -31,5 +39,15 @@ export class OutboxNode extends ServerTreeNode {
 
   getTenant() {
     return this.tenant;
+  }
+
+  openWebview(context: ExtensionContext) {
+    if (this.webview) {
+      this.webview.reveal();
+      return;
+    }
+
+    this.webview = new OutboxWebview(context, this.tenant, this.outbox);
+    this.webview.init();
   }
 }
