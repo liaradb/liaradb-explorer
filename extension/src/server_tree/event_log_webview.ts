@@ -17,7 +17,7 @@ export class EventLogWebview extends Panel<{
   init() {
     super.init({
       type: "eventLogWebview",
-      title: "EventLog",
+      title: "Event Log",
       icon: "list-ordered",
       route: "eventlog",
       params: {

@@ -3,11 +3,17 @@ import { CodiconType, Icon } from "./icon";
 
 export const ActionButton: FC<{
   title?: string;
+  type?: "button" | "submit" | "reset";
   icon: CodiconType;
   onClick?: MouseEventHandler;
-}> = ({ title, icon, onClick }) => {
+}> = ({ title, type = "button", icon, onClick }) => {
   return (
-    <button className="vscode-action-button" title={title} onClick={onClick}>
+    <button
+      className="vscode-action-button"
+      type={type}
+      title={title}
+      onClick={onClick}
+    >
       <Icon type={icon} />
     </button>
   );
