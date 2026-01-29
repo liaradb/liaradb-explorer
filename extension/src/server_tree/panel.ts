@@ -8,8 +8,6 @@ import {
   window,
 } from "vscode";
 
-import { Outbox, Tenant } from "../domain";
-
 import { EventSourceService } from "../service";
 
 export class Panel<TParams> {
@@ -174,23 +172,3 @@ type GetOutboxResponse = {
   low: number;
   high: number;
 };
-
-export class OutboxWebview extends Panel<{
-  tenantId: string;
-  outboxId: string;
-}> {
-  constructor(
-    context: ExtensionContext,
-    private tenant: Tenant,
-    private outbox: Outbox,
-  ) {
-    super(context);
-  }
-
-  init() {
-    super.init({
-      tenantId: this.tenant.getId(),
-      outboxId: this.outbox.getId(),
-    });
-  }
-}

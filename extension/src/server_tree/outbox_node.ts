@@ -7,7 +7,7 @@ import {
 
 import { Outbox, Tenant } from "../domain";
 import { ServerTreeNode } from "./server_tree_node";
-import { OutboxWebview } from "./panel";
+import { OutboxWebview } from "./outbox_webview";
 
 export class OutboxNode extends ServerTreeNode {
   constructor(
