@@ -54,7 +54,8 @@ export class ServerTreeProvider implements TreeDataProvider<ServerTreeNode> {
 
   async deleteServer(uri: Uri) {
     await deleteServer(this.context, uri);
-    this._onDidChangeTreeData.fire();
+    this.servers = this.listServers();
+    this.refresh();
   }
 
   async refresh() {
