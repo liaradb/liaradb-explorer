@@ -1,9 +1,11 @@
 import { ExtensionContext, Uri, commands, window } from "vscode";
+
+import { EventLogNode } from "./event_log_node";
+import { OutboxNode } from "./outbox_node";
+import { ServerNode } from "./server_node";
 import { ServerTreeProvider } from "./server_tree_provider";
 import { clearServerMap } from "./servers";
-import { ServerNode } from "./server_node";
 import { TenantNode } from "./tenant_node";
-import { OutboxNode } from "./outbox_node";
 
 export function activateServerTree(context: ExtensionContext) {
   const provider = new ServerTreeProvider(context);
@@ -104,6 +106,10 @@ export function activateServerTree(context: ExtensionContext) {
   commands.registerCommand("serverTree.resetData", async () => {
     clearServerMap(context);
     await provider.refresh();
+  });
+
+  commands.registerCommand("serverTree.viewEventLog", (node: EventLogNode) => {
+    node.openWebview(context);
   });
 
   commands.registerCommand("serverTree.viewOutbox", (node: OutboxNode) => {

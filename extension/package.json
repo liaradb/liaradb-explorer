@@ -104,6 +104,12 @@
         "icon": "$(trash)"
       },
       {
+        "command": "serverTree.viewEventLog",
+        "title": "LiaraDB: View Event Log",
+        "shortTitle": "View Event Log",
+        "icon": "$(debug-start)"
+      },
+      {
         "command": "serverTree.viewOutbox",
         "title": "LiaraDB: View Outbox",
         "shortTitle": "View Outbox",
@@ -194,6 +200,11 @@
         {
           "command": "serverTree.deleteTenant",
           "when": "view == serverTree && viewItem == tenant"
+        },
+        {
+          "command": "serverTree.viewOutbox",
+          "when": "view == serverTree && viewItem == eventLog",
+          "group": "inline"
         },
         {
           "command": "serverTree.viewOutbox",
