@@ -3,6 +3,7 @@
   "displayName": "LiaraDB",
   "description": "Manage LiaraDB instances and run commands directly in VSCode.",
   "version": "0.0.1",
+  "type": "module",
   "engines": {
     "vscode": "^1.108.0"
   },
