@@ -8,19 +8,16 @@ import {
   window,
 } from "vscode";
 
-import { EventSourceService } from "../service";
 import { Outbox, Tenant } from "../domain";
 
-export class OutboxWebview {
-  panel?: WebviewPanel;
+import { EventSourceService } from "../service";
 
-  constructor(
-    private context: ExtensionContext,
-    private tenant: Tenant,
-    private outbox: Outbox,
-  ) {}
+export class Panel<TParams> {
+  private panel?: WebviewPanel;
 
-  init() {
+  constructor(private context: ExtensionContext) {}
+
+  init(params: TParams) {
     if (this.reveal()) {
       return;
     }
@@ -35,7 +32,7 @@ export class OutboxWebview {
       },
     );
 
-    const webview = this.panel.webview.asWebviewUri(
+    const webviewUri = this.panel.webview.asWebviewUri(
       Uri.file(path.join(__dirname, "..", "..", "clientdist", "webview.js")),
     );
 
@@ -50,11 +47,10 @@ export class OutboxWebview {
     );
 
     // And set its HTML content
-    this.panel.webview.html = getWebviewContent(
-      webview,
+    this.panel.webview.html = this.getWebviewContent(
+      webviewUri,
       codiconsUri,
-      this.tenant,
-      this.outbox,
+      params,
     );
 
     // Handle messages from the webview
@@ -72,7 +68,7 @@ export class OutboxWebview {
     switch (message.command) {
       case "request":
         if (this.panel?.webview) {
-          handleRequest(this.panel.webview, message);
+          this.handleRequest(this.panel.webview, message);
         }
     }
   }
@@ -85,18 +81,8 @@ export class OutboxWebview {
     return false;
   }
 
-  dispose() {
-    this.panel = undefined;
-  }
-}
-
-function getWebviewContent(
-  webview: Uri,
-  codiconsUri: Uri,
-  tenant: Tenant,
-  outbox: Outbox,
-) {
-  return `<!DOCTYPE html>
+  getWebviewContent(webview: Uri, codiconsUri: Uri, params: TParams) {
+    return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -107,49 +93,51 @@ function getWebviewContent(
 <body>
     <div id="app"></div>
     <Script type="application/javascript">
-    const globalParams = {
-        tenantId: "${tenant.getId()}",
-        outboxId: "${outbox.getId()}",
-    };
+    const globalParams = ${JSON.stringify(params)};
     </script>
     <script src="${webview}"></script>
 </body>
 </html>`;
-}
-
-const handleRequest = async (webview: Webview, request: RequestMessage) => {
-  const service = new EventSourceService("localhost:50055");
-  try {
-    switch (request.data.method) {
-      case "getOutbox":
-        const outbox = await service.getOutbox(
-          request.data.message.outboxId,
-          request.data.message.tenantId,
-        );
-
-        send(webview, request.id, outbox);
-        break;
-    }
-  } catch (err) {
-    sendError(webview, request.id, `${err}`);
   }
-};
 
-const send = (webview: Webview, id: string, message: ResponseData) => {
-  webview.postMessage({
-    command: "response",
-    id,
-    data: message,
-  });
-};
+  async handleRequest(webview: Webview, request: RequestMessage) {
+    const service = new EventSourceService("localhost:50055");
+    try {
+      switch (request.data.method) {
+        case "getOutbox":
+          const outbox = await service.getOutbox(
+            request.data.message.outboxId,
+            request.data.message.tenantId,
+          );
 
-const sendError = (webview: Webview, id: string, error: string) => {
-  webview.postMessage({
-    command: "response",
-    id,
-    error,
-  });
-};
+          this.send(webview, request.id, outbox);
+          break;
+      }
+    } catch (err) {
+      this.sendError(webview, request.id, `${err}`);
+    }
+  }
+
+  send(webview: Webview, id: string, message: ResponseData) {
+    webview.postMessage({
+      command: "response",
+      id,
+      data: message,
+    });
+  }
+
+  sendError(webview: Webview, id: string, error: string) {
+    webview.postMessage({
+      command: "response",
+      id,
+      error,
+    });
+  }
+
+  dispose() {
+    this.panel = undefined;
+  }
+}
 
 export type Message = UnknownMessage | RequestMessage;
 
@@ -186,3 +174,23 @@ type GetOutboxResponse = {
   low: number;
   high: number;
 };
+
+export class OutboxWebview extends Panel<{
+  tenantId: string;
+  outboxId: string;
+}> {
+  constructor(
+    context: ExtensionContext,
+    private tenant: Tenant,
+    private outbox: Outbox,
+  ) {
+    super(context);
+  }
+
+  init() {
+    super.init({
+      tenantId: this.tenant.getId(),
+      outboxId: this.outbox.getId(),
+    });
+  }
+}
