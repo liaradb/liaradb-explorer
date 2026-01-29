@@ -1,11 +1,7 @@
+import { Route } from "./features";
+
 declare global {
-  type globalParams = {
-    route: string;
-    params: {
-      tenantId: string;
-      outboxId: string;
-    };
-  };
+  type globalParams = Route;
   const globalParams: globalParams;
 }
 

@@ -6,6 +6,7 @@ import "./styles";
 import { useMessenger } from "./messenger_context";
 import { Messenger } from "./messenger";
 import { ActionButton, Button, Icon, TextField } from "./components";
+import { Router } from "./features";
 
 export const App = () => {
   const messenger = useMessenger();
@@ -18,6 +19,7 @@ export const App = () => {
 
   return (
     <Container>
+      <Router route={globalParams} />
       <h1>Outbox</h1>
       <FormContainer>
         <TextField
