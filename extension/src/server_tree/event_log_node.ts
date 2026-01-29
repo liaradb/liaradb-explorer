@@ -1,4 +1,4 @@
-import * as vscode from "vscode";
+import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 
 import { Tenant } from "../domain";
 import { ServerTreeNode } from "./server_tree_node";
@@ -9,11 +9,8 @@ export class EventLogNode extends ServerTreeNode {
   }
 
   getTreeItem() {
-    const item = new vscode.TreeItem(
-      "Event Log",
-      vscode.TreeItemCollapsibleState.None,
-    );
-    item.iconPath = new vscode.ThemeIcon("list-ordered");
+    const item = new TreeItem("Event Log", TreeItemCollapsibleState.None);
+    item.iconPath = new ThemeIcon("list-ordered");
     return item;
   }
 

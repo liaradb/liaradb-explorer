@@ -1,19 +1,26 @@
-import * as vscode from "vscode";
+import {
+  Event,
+  EventEmitter,
+  TreeDataProvider,
+  TreeItem,
+  TreeItemCollapsibleState,
+  window,
+} from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 
 import { Dependency } from "./dependency";
 
-export class NodeDependenciesProvider implements vscode.TreeDataProvider<Dependency> {
+export class NodeDependenciesProvider implements TreeDataProvider<Dependency> {
   constructor(private workspaceRoot: string) {}
 
-  getTreeItem(element: Dependency): vscode.TreeItem {
+  getTreeItem(element: Dependency): TreeItem {
     return element;
   }
 
   async getChildren(element?: Dependency): Promise<Dependency[]> {
     if (!this.workspaceRoot) {
-      vscode.window.showInformationMessage("No dependency in empty workspace");
+      window.showInformationMessage("No dependency in empty workspace");
       return [];
     }
 
@@ -30,7 +37,7 @@ export class NodeDependenciesProvider implements vscode.TreeDataProvider<Depende
 
     const packageJsonPath = path.join(this.workspaceRoot, "package.json");
     if (!this.pathExists(packageJsonPath)) {
-      vscode.window.showInformationMessage("Workspace has no package.json");
+      window.showInformationMessage("Workspace has no package.json");
       return [];
     }
 
@@ -72,15 +79,11 @@ export class NodeDependenciesProvider implements vscode.TreeDataProvider<Depende
       return new Dependency(
         moduleName,
         version,
-        vscode.TreeItemCollapsibleState.Collapsed,
+        TreeItemCollapsibleState.Collapsed,
       );
     }
 
-    return new Dependency(
-      moduleName,
-      version,
-      vscode.TreeItemCollapsibleState.None,
-    );
+    return new Dependency(moduleName, version, TreeItemCollapsibleState.None);
   }
 
   private pathExists(p: string): boolean {
@@ -92,12 +95,11 @@ export class NodeDependenciesProvider implements vscode.TreeDataProvider<Depende
     return true;
   }
 
-  private _onDidChangeTreeData: vscode.EventEmitter<
+  private _onDidChangeTreeData: EventEmitter<
     Dependency | undefined | null | void
-  > = new vscode.EventEmitter<Dependency | undefined | null | void>();
-  readonly onDidChangeTreeData: vscode.Event<
-    Dependency | undefined | null | void
-  > = this._onDidChangeTreeData.event;
+  > = new EventEmitter<Dependency | undefined | null | void>();
+  readonly onDidChangeTreeData: Event<Dependency | undefined | null | void> =
+    this._onDidChangeTreeData.event;
 
   refresh(): void {
     this._onDidChangeTreeData.fire();

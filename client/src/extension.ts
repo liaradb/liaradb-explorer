@@ -2,13 +2,20 @@ import * as path from "path";
 
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from "vscode";
+import {
+  commands,
+  ExtensionContext,
+  Uri,
+  ViewColumn,
+  WebviewPanel,
+  window,
+} from "vscode";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: ExtensionContext) {
   // Only allow a single Cat Coder
-  let currentPanel: vscode.WebviewPanel | undefined = undefined;
+  let currentPanel: WebviewPanel | undefined = undefined;
 
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
@@ -20,32 +27,30 @@ export function activate(context: vscode.ExtensionContext) {
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
   context.subscriptions.push(
-    vscode.commands.registerCommand("liaradb-explorer.helloWorld", () => {
+    commands.registerCommand("liaradb-explorer.helloWorld", () => {
       // The code you place here will be executed every time your command is executed
       // Display a message box to the user
-      vscode.window.showInformationMessage(
-        "Hello World from liaradb-explorer!",
-      );
+      window.showInformationMessage("Hello World from liaradb-explorer!");
     }),
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("catCoding.start", async () => {
+    commands.registerCommand("catCoding.start", async () => {
       if (currentPanel) {
-        currentPanel.reveal(vscode.ViewColumn.One);
+        currentPanel.reveal(ViewColumn.One);
       } else {
         // Create and show panel
-        const panel = vscode.window.createWebviewPanel(
+        const panel = window.createWebviewPanel(
           "catCoding",
           "Cat Coding",
-          vscode.ViewColumn.One,
+          ViewColumn.One,
           {
             enableScripts: true,
           },
         );
 
         const webview = panel.webview.asWebviewUri(
-          vscode.Uri.file(path.join(__dirname, "webview.js")),
+          Uri.file(path.join(__dirname, "webview.js")),
         );
 
         // And set its HTML content
@@ -56,12 +61,10 @@ export function activate(context: vscode.ExtensionContext) {
           (message) => {
             switch (message.command) {
               case "alert":
-                vscode.window.showErrorMessage(message.text);
+                window.showErrorMessage(message.text);
                 return;
               case "request":
-                vscode.window.showErrorMessage(
-                  message.text + message.requestId,
-                );
+                window.showErrorMessage(message.text + message.requestId);
             }
           },
           undefined,
@@ -89,7 +92,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Our new command
   context.subscriptions.push(
-    vscode.commands.registerCommand("catCoding.doRefactor", () => {
+    commands.registerCommand("catCoding.doRefactor", () => {
       if (!currentPanel) {
         return;
       }
@@ -101,7 +104,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
 }
 
-function getWebviewContent(webview: vscode.Uri) {
+function getWebviewContent(webview: Uri) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>

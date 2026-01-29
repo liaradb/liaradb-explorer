@@ -1,6 +1,6 @@
-import * as vscode from "vscode";
+import { TreeItem } from "vscode";
 
 export abstract class ServerTreeNode {
-  abstract getTreeItem(): vscode.TreeItem;
+  abstract getTreeItem(): TreeItem;
   abstract getChildren(): Promise<ServerTreeNode[]>;
 }

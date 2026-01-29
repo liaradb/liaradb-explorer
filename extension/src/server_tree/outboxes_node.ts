@@ -1,4 +1,4 @@
-import * as vscode from "vscode";
+import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 
 import { Outbox, Tenant } from "../domain";
 import { ServerTreeNode } from "./server_tree_node";
@@ -13,31 +13,20 @@ export class OutboxesNode extends ServerTreeNode {
     super();
   }
 
-  private loading = false;
   private loaded = false;
   private outboxes: Outbox[] = [];
 
   getTreeItem() {
-    const item = new vscode.TreeItem(
-      "Outboxes",
-      vscode.TreeItemCollapsibleState.Collapsed,
-    );
-    item.iconPath = new vscode.ThemeIcon("inbox");
+    const item = new TreeItem("Outboxes", TreeItemCollapsibleState.Collapsed);
+    item.iconPath = new ThemeIcon("inbox");
     item.contextValue = "outboxes";
     return item;
   }
 
   async getChildren(): Promise<ServerTreeNode[]> {
     if (!this.loaded) {
-      try {
-        this.loading = true;
-        this.outboxes = await this.getOutboxes();
-        this.loaded = true;
-      } catch (err) {
-        vscode.window.showErrorMessage(`${err}`);
-      } finally {
-        this.loading = false;
-      }
+      this.outboxes = await this.getOutboxes();
+      this.loaded = true;
     }
 
     return this.outboxes.map((o) => new OutboxNode(this.tenant, o));

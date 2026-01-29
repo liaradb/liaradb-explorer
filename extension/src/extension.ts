@@ -2,17 +2,26 @@ import * as path from "path";
 
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from "vscode";
+import {
+  commands,
+  ExtensionContext,
+  Uri,
+  ViewColumn,
+  Webview,
+  WebviewPanel,
+  window,
+  workspace,
+} from "vscode";
 import { NodeDependenciesProvider } from "./tree/node_dependencies_provider";
 import { activateServerTree } from "./server_tree";
 import { EventSourceService } from "./service";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: ExtensionContext) {
   activateServerTree(context);
   // Only allow a single Cat Coder
-  let currentPanel: vscode.WebviewPanel | undefined = undefined;
+  let currentPanel: WebviewPanel | undefined = undefined;
 
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
@@ -24,22 +33,19 @@ export function activate(context: vscode.ExtensionContext) {
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
   context.subscriptions.push(
-    vscode.commands.registerCommand("liaradb-explorer.helloWorld", () => {
+    commands.registerCommand("liaradb-explorer.helloWorld", () => {
       // The code you place here will be executed every time your command is executed
       // Display a message box to the user
-      vscode.window.showInformationMessage(
-        "Hello World from liaradb-explorer!",
-      );
+      window.showInformationMessage("Hello World from liaradb-explorer!");
     }),
   );
 
   let registered = false;
   context.subscriptions.push(
-    vscode.commands.registerCommand("catCoding.start", async () => {
+    commands.registerCommand("catCoding.start", async () => {
       const rootPath =
-        vscode.workspace.workspaceFolders &&
-        vscode.workspace.workspaceFolders.length > 0
-          ? vscode.workspace.workspaceFolders[0].uri.fsPath
+        workspace.workspaceFolders && workspace.workspaceFolders.length > 0
+          ? workspace.workspaceFolders[0].uri.fsPath
           : undefined;
 
       if (!registered) {
@@ -48,16 +54,16 @@ export function activate(context: vscode.ExtensionContext) {
           const nodeDependenciesProvider = new NodeDependenciesProvider(
             rootPath,
           );
-          vscode.window.createTreeView("nodeDependencies", {
+          window.createTreeView("nodeDependencies", {
             treeDataProvider: nodeDependenciesProvider,
           });
 
-          // vscode.window.registerTreeDataProvider(
+          // window.registerTreeDataProvider(
           //   "nodeDependencies",
           //   nodeDependenciesProvider,
           // );
 
-          vscode.commands.registerCommand("nodeDependencies.refreshEntry", () =>
+          commands.registerCommand("nodeDependencies.refreshEntry", () =>
             nodeDependenciesProvider.refresh(),
           );
         }
@@ -66,22 +72,20 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       if (currentPanel) {
-        currentPanel.reveal(vscode.ViewColumn.One);
+        currentPanel.reveal(ViewColumn.One);
       } else {
         // Create and show panel
-        const panel = vscode.window.createWebviewPanel(
+        const panel = window.createWebviewPanel(
           "catCoding",
           "Cat Coding",
-          vscode.ViewColumn.One,
+          ViewColumn.One,
           {
             enableScripts: true,
           },
         );
 
         const webview = panel.webview.asWebviewUri(
-          vscode.Uri.file(
-            path.join(__dirname, "..", "clientdist", "webview.js"),
-          ),
+          Uri.file(path.join(__dirname, "..", "clientdist", "webview.js")),
         );
 
         // And set its HTML content
@@ -92,10 +96,10 @@ export function activate(context: vscode.ExtensionContext) {
           (message: Message) => {
             switch (message.command) {
               case "alert":
-                vscode.window.showErrorMessage(message.text);
+                window.showErrorMessage(message.text);
                 return;
               case "request":
-                vscode.window.showErrorMessage(message.data + message.id);
+                window.showErrorMessage(message.data + message.id);
                 if (currentPanel?.webview) {
                   handleRequest(currentPanel.webview, message);
                 }
@@ -128,7 +132,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Our new command
   context.subscriptions.push(
-    vscode.commands.registerCommand("catCoding.doRefactor", () => {
+    commands.registerCommand("catCoding.doRefactor", () => {
       if (!currentPanel) {
         return;
       }
@@ -140,10 +144,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
 }
 
-const handleRequest = async (
-  webview: vscode.Webview,
-  request: RequestMessage,
-) => {
+const handleRequest = async (webview: Webview, request: RequestMessage) => {
   const service = new EventSourceService("localhost:50055");
   try {
     switch (request.data.method) {
@@ -161,7 +162,7 @@ const handleRequest = async (
   }
 };
 
-const send = (webview: vscode.Webview, id: string, message: ResponseData) => {
+const send = (webview: Webview, id: string, message: ResponseData) => {
   webview.postMessage({
     command: "response",
     id,
@@ -169,7 +170,7 @@ const send = (webview: vscode.Webview, id: string, message: ResponseData) => {
   });
 };
 
-const sendError = (webview: vscode.Webview, id: string, error: string) => {
+const sendError = (webview: Webview, id: string, error: string) => {
   webview.postMessage({
     command: "response",
     id,
@@ -213,7 +214,7 @@ type GetOutboxResponse = {
   high: number;
 };
 
-function getWebviewContent(webview: vscode.Uri) {
+function getWebviewContent(webview: Uri) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>

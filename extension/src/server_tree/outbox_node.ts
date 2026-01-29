@@ -1,4 +1,4 @@
-import * as vscode from "vscode";
+import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 
 import { Outbox, Tenant } from "../domain";
 import { ServerTreeNode } from "./server_tree_node";
@@ -12,11 +12,11 @@ export class OutboxNode extends ServerTreeNode {
   }
 
   getTreeItem() {
-    const item = new vscode.TreeItem(
+    const item = new TreeItem(
       `Partition ${this.outbox.getLow()} - ${this.outbox.getHigh()}`,
-      vscode.TreeItemCollapsibleState.None,
+      TreeItemCollapsibleState.None,
     );
-    item.iconPath = new vscode.ThemeIcon("checklist");
+    item.iconPath = new ThemeIcon("checklist");
     item.contextValue = "outbox";
     return item;
   }

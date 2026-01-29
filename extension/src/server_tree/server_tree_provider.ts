@@ -4,6 +4,7 @@ import {
   TreeDataProvider,
   TreeItem,
   Uri,
+  window,
 } from "vscode";
 
 import { Server } from "../domain";
@@ -28,7 +29,12 @@ export class ServerTreeProvider implements TreeDataProvider<ServerTreeNode> {
       return this.servers;
     }
 
-    return element.getChildren();
+    try {
+      return element.getChildren();
+    } catch (err) {
+      window.showErrorMessage(`${err}`);
+      return [];
+    }
   }
 
   isUriUnique(uri: Uri) {

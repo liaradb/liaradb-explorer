@@ -1,4 +1,4 @@
-import * as vscode from "vscode";
+import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 
 import { Tenant } from "../domain";
 import { ServerTreeNode } from "./server_tree_node";
@@ -24,11 +24,11 @@ export class TenantNode extends ServerTreeNode {
   private children: ServerTreeNode[];
 
   getTreeItem() {
-    const item = new vscode.TreeItem(
+    const item = new TreeItem(
       this.getName(),
-      vscode.TreeItemCollapsibleState.Collapsed,
+      TreeItemCollapsibleState.Collapsed,
     );
-    item.iconPath = new vscode.ThemeIcon("database");
+    item.iconPath = new ThemeIcon("database");
     item.contextValue = "tenant";
     return item;
   }

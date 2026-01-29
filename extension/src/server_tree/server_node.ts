@@ -1,4 +1,4 @@
-import * as vscode from "vscode";
+import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 
 import { Server, Tenant } from "../domain";
 import { EventSourceService } from "../service";
@@ -12,16 +12,15 @@ export class ServerNode extends ServerTreeNode {
   }
 
   private service: EventSourceService;
-  private loading = false;
   private loaded = false;
   private tenants: Tenant[] = [];
 
   getTreeItem() {
-    const item = new vscode.TreeItem(
+    const item = new TreeItem(
       this.getName(),
-      vscode.TreeItemCollapsibleState.Collapsed,
+      TreeItemCollapsibleState.Collapsed,
     );
-    item.iconPath = new vscode.ThemeIcon("server");
+    item.iconPath = new ThemeIcon("server");
     item.contextValue = "server";
     return item;
   }
@@ -41,15 +40,8 @@ export class ServerNode extends ServerTreeNode {
 
   async getChildren(): Promise<ServerTreeNode[]> {
     if (!this.loaded) {
-      try {
-        this.loading = true;
-        this.tenants = await this.getTenants();
-        this.loaded = true;
-      } catch (err) {
-        vscode.window.showErrorMessage(`${err}`);
-      } finally {
-        this.loading = false;
-      }
+      this.tenants = await this.getTenants();
+      this.loaded = true;
     }
 
     return this.tenants.map((t) => new TenantNode(this.service, t));
