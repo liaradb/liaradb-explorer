@@ -18,8 +18,13 @@ export class OutboxWebview extends Panel<{
 
   init() {
     super.init({
-      tenantId: this.tenant.getId(),
-      outboxId: this.outbox.getId(),
+      type: "outboxWebview",
+      title: "Outbox",
+      route: "outbox",
+      params: {
+        tenantId: this.tenant.getId(),
+        outboxId: this.outbox.getId(),
+      },
     });
   }
 }

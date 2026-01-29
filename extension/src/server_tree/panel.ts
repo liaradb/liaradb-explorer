@@ -15,20 +15,25 @@ export class Panel<TParams> {
 
   constructor(private context: ExtensionContext) {}
 
-  init(params: TParams) {
+  init({
+    type,
+    title,
+    route,
+    params,
+  }: {
+    type: string;
+    title: string;
+    route: string;
+    params: TParams;
+  }) {
     if (this.reveal()) {
       return;
     }
 
-    this.panel = window.createWebviewPanel(
-      "outboxWebview",
-      "Outbox",
-      ViewColumn.Active,
-      {
-        enableScripts: true,
-        retainContextWhenHidden: true,
-      },
-    );
+    this.panel = window.createWebviewPanel(type, title, ViewColumn.Active, {
+      enableScripts: true,
+      retainContextWhenHidden: true,
+    });
 
     const webviewUri = this.panel.webview.asWebviewUri(
       Uri.file(path.join(__dirname, "..", "..", "clientdist", "webview.js")),
@@ -46,8 +51,10 @@ export class Panel<TParams> {
 
     // And set its HTML content
     this.panel.webview.html = this.getWebviewContent(
+      title,
       webviewUri,
       codiconsUri,
+      route,
       params,
     );
 
@@ -79,19 +86,28 @@ export class Panel<TParams> {
     return false;
   }
 
-  getWebviewContent(webview: Uri, codiconsUri: Uri, params: TParams) {
+  getWebviewContent(
+    title: string,
+    webview: Uri,
+    codiconsUri: Uri,
+    route: string,
+    params: TParams,
+  ) {
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cat Coding</title>
+    <title>${title}</title>
     <link href="${codiconsUri}" rel="stylesheet" />
 </head>
 <body>
     <div id="app"></div>
     <Script type="application/javascript">
-    const globalParams = ${JSON.stringify(params)};
+    const globalParams = {
+      route: ${JSON.stringify(route)},
+      params: ${JSON.stringify(params)},
+    };
     </script>
     <script src="${webview}"></script>
 </body>

@@ -1,7 +1,10 @@
 declare global {
   type globalParams = {
-    tenantId: string;
-    outboxId: string;
+    route: string;
+    params: {
+      tenantId: string;
+      outboxId: string;
+    };
   };
   const globalParams: globalParams;
 }

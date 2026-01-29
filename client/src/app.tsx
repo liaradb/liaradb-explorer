@@ -13,8 +13,8 @@ export const App = () => {
   const [results, setResult] = useState<GetOutboxResponse[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
 
-  const [outboxId, setOutboxId] = useState(globalParams.outboxId);
-  const [tenantId, setTenantId] = useState(globalParams.tenantId);
+  const [outboxId, setOutboxId] = useState(globalParams.params.outboxId);
+  const [tenantId, setTenantId] = useState(globalParams.params.tenantId);
 
   return (
     <Container>
@@ -38,7 +38,7 @@ export const App = () => {
         <Button
           block
           onClick={async () => {
-            const { outboxId, tenantId } = globalParams;
+            const { outboxId, tenantId } = globalParams.params;
             try {
               const result = await getOutbox(messenger, outboxId, tenantId);
               setResult([...results, result]);
