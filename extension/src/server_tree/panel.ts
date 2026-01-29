@@ -1,6 +1,7 @@
 import path from "path";
 import {
   ExtensionContext,
+  ThemeIcon,
   Uri,
   ViewColumn,
   Webview,
@@ -18,11 +19,13 @@ export class Panel<TParams> {
   init({
     type,
     title,
+    icon,
     route,
     params,
   }: {
     type: string;
     title: string;
+    icon: string;
     route: string;
     params: TParams;
   }) {
@@ -57,6 +60,8 @@ export class Panel<TParams> {
       route,
       params,
     );
+
+    this.panel.iconPath = new ThemeIcon(icon);
 
     // Handle messages from the webview
     this.panel.webview.onDidReceiveMessage(

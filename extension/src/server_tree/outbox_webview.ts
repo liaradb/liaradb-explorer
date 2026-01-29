@@ -20,6 +20,7 @@ export class OutboxWebview extends Panel<{
     super.init({
       type: "outboxWebview",
       title: "Outbox",
+      icon: "checklist",
       route: "outbox",
       params: {
         tenantId: this.tenant.getId(),
