@@ -7,6 +7,7 @@ import {
   CreateOutboxRequest,
   CreateTenantRequest,
   GetOutboxRequest,
+  GetRequest,
   ListOutboxesRequest,
   ListTenantsRequest,
   Outbox as OutboxMessage,
@@ -47,6 +48,21 @@ export class EventSourceService {
     const response = await this.service.createOutbox(request);
 
     return response.getOutboxId();
+  }
+
+  async getAggregate(
+    tenantId: string,
+    partitionId: number,
+    aggregateId: string,
+  ) {
+    const request = new GetRequest();
+    request.setTenantId(tenantId);
+    request.setPartitionId(partitionId);
+    request.setAggregateId(aggregateId);
+
+    const response = await this.service.get(request);
+
+    return response.map((event) => event.toObject());
   }
 
   async getOutbox(outboxId: string, tenantId: string) {

@@ -123,6 +123,16 @@ export class Panel<TParams> {
     const service = new EventSourceService("localhost:50055");
     try {
       switch (request.data.method) {
+        case "getAggregate":
+          const events = await service.getAggregate(
+            request.data.message.tenantId,
+            request.data.message.partitionId,
+            request.data.message.aggregateId,
+          );
+          this.send(webview, request.id, {
+            events,
+          });
+          break;
         case "getOutbox":
           const outbox = await service.getOutbox(
             request.data.message.outboxId,
@@ -146,6 +156,7 @@ export class Panel<TParams> {
   }
 
   sendError(webview: Webview, id: string, error: string) {
+    window.showErrorMessage(error);
     webview.postMessage({
       command: "response",
       id,
@@ -168,8 +179,10 @@ export type UnknownMessage = {
 export type RequestMessage = {
   command: "request";
   id: string;
-  data: GetOutboxRequest;
+  data: RequestData;
 };
+
+type RequestData = GetAggregateRequest | GetOutboxRequest;
 
 export type ResponseMessage = {
   command: "response";
@@ -178,7 +191,20 @@ export type ResponseMessage = {
   error: string | undefined;
 };
 
-type ResponseData = GetOutboxResponse;
+type ResponseData = GetAggregateResponse | GetOutboxResponse;
+
+type GetAggregateRequest = {
+  method: "getAggregate";
+  message: {
+    tenantId: string;
+    partitionId: number;
+    aggregateId: string;
+  };
+};
+
+type GetAggregateResponse = {
+  events: any[];
+};
 
 type GetOutboxRequest = {
   method: "getOutbox";

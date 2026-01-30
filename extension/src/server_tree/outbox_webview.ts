@@ -19,7 +19,7 @@ export class OutboxWebview extends Panel<{
   init() {
     super.init({
       type: "outboxWebview",
-      title: "Outbox",
+      title: `Partition ${this.outbox.getLow()} - ${this.outbox.getHigh()}`,
       icon: "checklist",
       route: "outbox",
       params: {
