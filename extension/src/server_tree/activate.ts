@@ -16,15 +16,15 @@ export function activateServerTree(context: ExtensionContext) {
     treeDataProvider: provider,
   });
 
-  commands.registerCommand("serverTree.show", () => {
+  registerCommand(context, "serverTree.show", () => {
     window.createTreeView("serverTree", {
       treeDataProvider: provider,
     });
   });
 
-  commands.registerCommand("serverTree.refresh", () => provider.refresh());
+  registerCommand(context, "serverTree.refresh", () => provider.refresh());
 
-  commands.registerCommand("serverTree.addServer", async () => {
+  registerCommand(context, "serverTree.addServer", async () => {
     const uri = await getUri(provider);
     if (!uri) {
       return;
@@ -41,7 +41,8 @@ export function activateServerTree(context: ExtensionContext) {
     await provider.addServer(uri, name);
   });
 
-  commands.registerCommand(
+  registerCommand(
+    context,
     "serverTree.deleteServer",
     async (node: ServerNode) => {
       const answer = await window.showWarningMessage(
@@ -57,7 +58,7 @@ export function activateServerTree(context: ExtensionContext) {
     },
   );
 
-  commands.registerCommand("serverTree.addTenant", async (node: ServerNode) => {
+  registerCommand(context, "serverTree.addTenant", async (node: ServerNode) => {
     const name = await getName("Tenant name");
     if (name === undefined) {
       return;
@@ -66,7 +67,8 @@ export function activateServerTree(context: ExtensionContext) {
     await provider.addTenant(node, name);
   });
 
-  commands.registerCommand(
+  registerCommand(
+    context,
     "serverTree.renameTenant",
     async (node: TenantNode) => {
       const name = await getName("Tenant name", node.getName());
@@ -78,7 +80,8 @@ export function activateServerTree(context: ExtensionContext) {
     },
   );
 
-  commands.registerCommand(
+  registerCommand(
+    context,
     "serverTree.deleteTenant",
     async (node: TenantNode) => {
       const answer = await window.showWarningMessage(
@@ -92,7 +95,8 @@ export function activateServerTree(context: ExtensionContext) {
     },
   );
 
-  commands.registerCommand(
+  registerCommand(
+    context,
     "serverTree.renameServer",
     async (node: ServerNode) => {
       const name = await getName("Server name", node.getName());
@@ -104,23 +108,25 @@ export function activateServerTree(context: ExtensionContext) {
     },
   );
 
-  commands.registerCommand(
+  registerCommand(
+    context,
     "serverTree.refreshServer",
     async (node: ServerNode) => {
       await provider.refreshServer(node);
     },
   );
 
-  commands.registerCommand("serverTree.resetData", async () => {
+  registerCommand(context, "serverTree.resetData", async () => {
     clearServerMap(context);
-    await provider.refresh();
+    provider.refresh();
   });
 
-  commands.registerCommand("serverTree.viewEventLog", (node: EventLogNode) => {
+  registerCommand(context, "serverTree.viewEventLog", (node: EventLogNode) => {
     node.openWebview(context);
   });
 
-  commands.registerCommand(
+  registerCommand(
+    context,
     "serverTree.addOutbox",
     async (node: OutboxListNode) => {
       const low = await getNumber("Low range", "0");
@@ -137,7 +143,7 @@ export function activateServerTree(context: ExtensionContext) {
     },
   );
 
-  commands.registerCommand("serverTree.viewOutbox", (node: OutboxNode) => {
+  registerCommand(context, "serverTree.viewOutbox", (node: OutboxNode) => {
     node.openWebview(context);
   });
 }
@@ -195,3 +201,24 @@ async function getNumber(prompt: string, value?: string) {
 }
 
 const getHost = (uri: Uri) => uri.authority.split(":")[0];
+
+function registerCommand(
+  context: ExtensionContext,
+  command: string,
+  callback: (...args: any[]) => any,
+  thisArg?: any,
+) {
+  const disposable = commands.registerCommand(
+    command,
+    async (...args: any[]) => {
+      try {
+        await callback(...args);
+      } catch (err) {
+        window.showErrorMessage(`${err}`);
+      }
+    },
+    thisArg,
+  );
+  context.subscriptions.push(disposable);
+  return disposable;
+}
