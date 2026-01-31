@@ -3459,9 +3459,8 @@ proto.liara.CreateOutboxRequest.prototype.toObject = function(opt_includeInstanc
 proto.liara.CreateOutboxRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     tenantId: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    outboxId: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    low: jspb.Message.getFieldWithDefault(msg, 3, 0),
-    high: jspb.Message.getFieldWithDefault(msg, 4, 0)
+    low: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    high: jspb.Message.getFieldWithDefault(msg, 3, 0)
   };
 
   if (includeInstance) {
@@ -3503,14 +3502,10 @@ proto.liara.CreateOutboxRequest.deserializeBinaryFromReader = function(msg, read
       msg.setTenantId(value);
       break;
     case 2:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setOutboxId(value);
-      break;
-    case 3:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setLow(value);
       break;
-    case 4:
+    case 3:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setHigh(value);
       break;
@@ -3550,24 +3545,17 @@ proto.liara.CreateOutboxRequest.serializeBinaryToWriter = function(message, writ
       f
     );
   }
-  f = message.getOutboxId();
-  if (f.length > 0) {
-    writer.writeString(
-      2,
-      f
-    );
-  }
   f = message.getLow();
   if (f !== 0) {
     writer.writeInt32(
-      3,
+      2,
       f
     );
   }
   f = message.getHigh();
   if (f !== 0) {
     writer.writeInt32(
-      4,
+      3,
       f
     );
   }
@@ -3593,29 +3581,11 @@ proto.liara.CreateOutboxRequest.prototype.setTenantId = function(value) {
 
 
 /**
- * optional string outbox_id = 2;
- * @return {string}
- */
-proto.liara.CreateOutboxRequest.prototype.getOutboxId = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.liara.CreateOutboxRequest} returns this
- */
-proto.liara.CreateOutboxRequest.prototype.setOutboxId = function(value) {
-  return jspb.Message.setProto3StringField(this, 2, value);
-};
-
-
-/**
- * optional int32 low = 3;
+ * optional int32 low = 2;
  * @return {number}
  */
 proto.liara.CreateOutboxRequest.prototype.getLow = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
 };
 
 
@@ -3624,16 +3594,16 @@ proto.liara.CreateOutboxRequest.prototype.getLow = function() {
  * @return {!proto.liara.CreateOutboxRequest} returns this
  */
 proto.liara.CreateOutboxRequest.prototype.setLow = function(value) {
-  return jspb.Message.setProto3IntField(this, 3, value);
+  return jspb.Message.setProto3IntField(this, 2, value);
 };
 
 
 /**
- * optional int32 high = 4;
+ * optional int32 high = 3;
  * @return {number}
  */
 proto.liara.CreateOutboxRequest.prototype.getHigh = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
 };
 
 
@@ -3642,7 +3612,7 @@ proto.liara.CreateOutboxRequest.prototype.getHigh = function() {
  * @return {!proto.liara.CreateOutboxRequest} returns this
  */
 proto.liara.CreateOutboxRequest.prototype.setHigh = function(value) {
-  return jspb.Message.setProto3IntField(this, 4, value);
+  return jspb.Message.setProto3IntField(this, 3, value);
 };
 
 

@@ -370,8 +370,6 @@ export namespace GetByOutboxRequest {
 export class CreateOutboxRequest extends jspb.Message { 
     getTenantId(): string;
     setTenantId(value: string): CreateOutboxRequest;
-    getOutboxId(): string;
-    setOutboxId(value: string): CreateOutboxRequest;
     getLow(): number;
     setLow(value: number): CreateOutboxRequest;
     getHigh(): number;
@@ -390,7 +388,6 @@ export class CreateOutboxRequest extends jspb.Message {
 export namespace CreateOutboxRequest {
     export type AsObject = {
         tenantId: string,
-        outboxId: string,
         low: number,
         high: number,
     }

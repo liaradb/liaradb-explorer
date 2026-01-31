@@ -33,14 +33,8 @@ export class EventSourceService {
   private client: EventSourceServiceClient;
   private service: ReturnType<typeof createService>;
 
-  async createOutbox(
-    outboxId: string,
-    tenantId: string,
-    low: number,
-    high: number,
-  ) {
+  async createOutbox(tenantId: string, low: number, high: number) {
     const request = new CreateOutboxRequest();
-    request.setOutboxId(outboxId);
     request.setTenantId(tenantId);
     request.setLow(low);
     request.setHigh(high);
