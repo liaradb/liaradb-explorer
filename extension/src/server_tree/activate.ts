@@ -5,6 +5,7 @@ import { OutboxNode } from "./outbox_node";
 import { ServerNode } from "./server_node";
 import { ServerTreeProvider } from "./server_tree_provider";
 import { clearServerMap } from "./servers";
+import { OutboxListNode } from "./outbox_list_node";
 import { TenantNode } from "./tenant_node";
 
 export function activateServerTree(context: ExtensionContext) {
@@ -112,6 +113,23 @@ export function activateServerTree(context: ExtensionContext) {
     node.openWebview(context);
   });
 
+  commands.registerCommand(
+    "serverTree.addOutbox",
+    async (node: OutboxListNode) => {
+      const low = await getNumber("Low range", "0");
+      if (low === undefined) {
+        return;
+      }
+
+      const high = await getNumber("High range", low);
+      if (high === undefined) {
+        return;
+      }
+
+      await provider.addOutbox(node, parseInt(low), parseInt(high));
+    },
+  );
+
   commands.registerCommand("serverTree.viewOutbox", (node: OutboxNode) => {
     node.openWebview(context);
   });
@@ -151,6 +169,22 @@ async function getName(prompt: string, value?: string) {
   });
 
   return name?.trim();
+}
+
+async function getNumber(prompt: string, value?: string) {
+  const result = await window.showInputBox({
+    prompt,
+    value,
+    validateInput: (value) => {
+      const t = value.trim();
+      if (!t.length || isNaN(t.trim() as any)) {
+        return "Invalid number";
+      }
+      return undefined;
+    },
+  });
+
+  return result?.trim();
 }
 
 const getHost = (uri: Uri) => uri.authority.split(":")[0];

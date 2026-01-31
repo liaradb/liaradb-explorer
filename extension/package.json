@@ -62,6 +62,12 @@
         "icon": "$(plus)"
       },
       {
+        "command": "serverTree.addOutbox",
+        "title": "LiaraDB: Add Outbox",
+        "shortTitle": "Add Outbox",
+        "icon": "$(plus)"
+      },
+      {
         "command": "serverTree.deleteServer",
         "title": "LiaraDB: Delete Server",
         "shortTitle": "Delete Server",
@@ -202,8 +208,13 @@
           "when": "view == serverTree && viewItem == tenant"
         },
         {
-          "command": "serverTree.viewOutbox",
+          "command": "serverTree.viewEventLog",
           "when": "view == serverTree && viewItem == eventLog",
+          "group": "inline"
+        },
+        {
+          "command": "serverTree.addOutbox",
+          "when": "view == serverTree && viewItem == outboxList",
           "group": "inline"
         },
         {

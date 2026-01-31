@@ -3,7 +3,7 @@ import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 import { Tenant } from "../domain";
 import { ServerTreeNode } from "./server_tree_node";
 import { EventLogNode } from "./event_log_node";
-import { OutboxesNode } from "./outboxes_node";
+import { OutboxListNode } from "./outbox_list_node";
 import { EventSourceService } from "../service";
 
 export class TenantNode extends ServerTreeNode {
@@ -14,13 +14,13 @@ export class TenantNode extends ServerTreeNode {
     super();
 
     this.eventLog = new EventLogNode(this.tenant);
-    this.outbox = new OutboxesNode(service, this.tenant);
+    this.outboxList = new OutboxListNode(service, this.tenant);
 
-    this.children = [this.eventLog, this.outbox];
+    this.children = [this.eventLog, this.outboxList];
   }
 
   private eventLog: EventLogNode;
-  private outbox: OutboxesNode;
+  private outboxList: OutboxListNode;
   private children: ServerTreeNode[];
 
   getTreeItem() {

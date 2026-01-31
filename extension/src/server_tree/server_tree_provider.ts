@@ -9,6 +9,7 @@ import {
 
 import { Server } from "../domain";
 
+import { OutboxListNode } from "./outbox_list_node";
 import { ServerNode } from "./server_node";
 import { ServerTreeNode } from "./server_tree_node";
 import { addServer, deleteServer, getServerMap } from "./servers";
@@ -58,7 +59,12 @@ export class ServerTreeProvider implements TreeDataProvider<ServerTreeNode> {
     this.refresh();
   }
 
-  async refresh() {
+  async addOutbox(node: OutboxListNode, low: number, high: number) {
+    await node.addOutbox(low, high);
+    this.refresh();
+  }
+
+  refresh() {
     this._onDidChangeTreeData.fire();
   }
 
