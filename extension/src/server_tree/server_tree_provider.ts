@@ -59,6 +59,11 @@ export class ServerTreeProvider implements TreeDataProvider<ServerTreeNode> {
     this.refresh();
   }
 
+  async addTenant(node: ServerNode, name: string) {
+    await node.addTenant(name);
+    this.refresh();
+  }
+
   async addOutbox(node: OutboxListNode, low: number, high: number) {
     await node.addOutbox(low, high);
     this.refresh();

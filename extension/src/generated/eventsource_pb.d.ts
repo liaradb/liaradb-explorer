@@ -506,8 +506,6 @@ export namespace UpdateOutboxPositionResponse {
 }
 
 export class CreateTenantRequest extends jspb.Message { 
-    getTenantId(): string;
-    setTenantId(value: string): CreateTenantRequest;
     getName(): string;
     setName(value: string): CreateTenantRequest;
 
@@ -523,7 +521,6 @@ export class CreateTenantRequest extends jspb.Message {
 
 export namespace CreateTenantRequest {
     export type AsObject = {
-        tenantId: string,
         name: string,
     }
 }

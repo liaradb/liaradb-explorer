@@ -52,6 +52,11 @@ export class ServerNode extends ServerTreeNode {
     return tenants.sort((a, b) => a.getName().localeCompare(b.getName()));
   }
 
+  async addTenant(name: string) {
+    await this.service.createTenant(name);
+    this.loaded = false;
+  }
+
   async refresh() {
     this.loaded = false;
   }

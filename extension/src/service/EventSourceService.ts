@@ -73,9 +73,8 @@ export class EventSourceService {
     };
   }
 
-  async createTenant(tenantId: string, name: string) {
+  async createTenant(name: string) {
     const request = new CreateTenantRequest();
-    request.setTenantId(tenantId);
     request.setName(name);
 
     const response = await this.service.createTenant(request);

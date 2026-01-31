@@ -57,19 +57,24 @@ export function activateServerTree(context: ExtensionContext) {
     },
   );
 
-  commands.registerCommand("serverTree.addTenant", (node: ServerNode) => {
-    const name = getName("Tenant name");
+  commands.registerCommand("serverTree.addTenant", async (node: ServerNode) => {
+    const name = await getName("Tenant name");
     if (name === undefined) {
       return;
     }
+
+    await provider.addTenant(node, name);
   });
 
-  commands.registerCommand("serverTree.renameTenant", (node: TenantNode) => {
-    const name = getName("Tenant name", node.getName());
-    if (name === undefined) {
-      return;
-    }
-  });
+  commands.registerCommand(
+    "serverTree.renameTenant",
+    async (node: TenantNode) => {
+      const name = await getName("Tenant name", node.getName());
+      if (name === undefined) {
+        return;
+      }
+    },
+  );
 
   commands.registerCommand(
     "serverTree.deleteTenant",

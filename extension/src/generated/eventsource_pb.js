@@ -4419,8 +4419,7 @@ proto.liara.CreateTenantRequest.prototype.toObject = function(opt_includeInstanc
  */
 proto.liara.CreateTenantRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    tenantId: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    name: jspb.Message.getFieldWithDefault(msg, 2, "")
+    name: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -4459,10 +4458,6 @@ proto.liara.CreateTenantRequest.deserializeBinaryFromReader = function(msg, read
     switch (field) {
     case 1:
       var value = /** @type {string} */ (reader.readString());
-      msg.setTenantId(value);
-      break;
-    case 2:
-      var value = /** @type {string} */ (reader.readString());
       msg.setName(value);
       break;
     default:
@@ -4494,17 +4489,10 @@ proto.liara.CreateTenantRequest.prototype.serializeBinary = function() {
  */
 proto.liara.CreateTenantRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getTenantId();
-  if (f.length > 0) {
-    writer.writeString(
-      1,
-      f
-    );
-  }
   f = message.getName();
   if (f.length > 0) {
     writer.writeString(
-      2,
+      1,
       f
     );
   }
@@ -4512,10 +4500,10 @@ proto.liara.CreateTenantRequest.serializeBinaryToWriter = function(message, writ
 
 
 /**
- * optional string tenant_id = 1;
+ * optional string name = 1;
  * @return {string}
  */
-proto.liara.CreateTenantRequest.prototype.getTenantId = function() {
+proto.liara.CreateTenantRequest.prototype.getName = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -4524,26 +4512,8 @@ proto.liara.CreateTenantRequest.prototype.getTenantId = function() {
  * @param {string} value
  * @return {!proto.liara.CreateTenantRequest} returns this
  */
-proto.liara.CreateTenantRequest.prototype.setTenantId = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
-};
-
-
-/**
- * optional string name = 2;
- * @return {string}
- */
-proto.liara.CreateTenantRequest.prototype.getName = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.liara.CreateTenantRequest} returns this
- */
 proto.liara.CreateTenantRequest.prototype.setName = function(value) {
-  return jspb.Message.setProto3StringField(this, 2, value);
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
