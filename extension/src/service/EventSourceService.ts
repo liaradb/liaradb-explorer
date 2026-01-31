@@ -11,6 +11,7 @@ import {
   ListOutboxesRequest,
   ListTenantsRequest,
   Outbox as OutboxMessage,
+  RenameTenantRequest,
   Tenant as TenantMessage,
 } from "../generated/eventsource_pb";
 
@@ -80,6 +81,14 @@ export class EventSourceService {
     const response = await this.service.createTenant(request);
 
     return response.getTenantId();
+  }
+
+  async renameTenant(tenantId: string, name: string) {
+    const request = new RenameTenantRequest();
+    request.setTenantId(tenantId);
+    request.setName(name);
+
+    await this.service.renameTenant(request);
   }
 
   async listOutboxes(tenantId: string) {

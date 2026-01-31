@@ -13,6 +13,7 @@ import { OutboxListNode } from "./outbox_list_node";
 import { ServerNode } from "./server_node";
 import { ServerTreeNode } from "./server_tree_node";
 import { addServer, deleteServer, getServerMap } from "./servers";
+import { TenantNode } from "./tenant_node";
 
 export class ServerTreeProvider implements TreeDataProvider<ServerTreeNode> {
   constructor(private context: ExtensionContext) {
@@ -61,6 +62,11 @@ export class ServerTreeProvider implements TreeDataProvider<ServerTreeNode> {
 
   async addTenant(node: ServerNode, name: string) {
     await node.addTenant(name);
+    this.refresh();
+  }
+
+  async renameTenant(node: TenantNode, name: string) {
+    await node.rename(name);
     this.refresh();
   }
 

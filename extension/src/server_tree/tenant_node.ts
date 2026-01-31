@@ -40,4 +40,9 @@ export class TenantNode extends ServerTreeNode {
   async getChildren(): Promise<ServerTreeNode[]> {
     return this.children;
   }
+
+  async rename(name: string) {
+    await this.service.renameTenant(this.tenant.getId(), name);
+    this.tenant.rename(name);
+  }
 }

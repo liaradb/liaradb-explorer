@@ -73,6 +73,8 @@ export function activateServerTree(context: ExtensionContext) {
       if (name === undefined) {
         return;
       }
+
+      await provider.renameTenant(node, name);
     },
   );
 

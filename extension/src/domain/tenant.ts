@@ -11,4 +11,8 @@ export class Tenant {
   getName() {
     return this.name;
   }
+
+  rename(name: string) {
+    this.name = name;
+  }
 }
