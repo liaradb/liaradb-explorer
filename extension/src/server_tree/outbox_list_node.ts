@@ -37,7 +37,8 @@ export class OutboxListNode extends ServerTreeNode {
     return outboxes.sort((a, b) => a.getLow() - b.getLow());
   }
 
-  addOutbox(low: number, high: number) {
-    return this.service.createOutbox(this.tenant.getId(), low, high);
+  async addOutbox(low: number, high: number) {
+    await this.service.createOutbox(this.tenant.getId(), low, high);
+    this.loaded = false;
   }
 }

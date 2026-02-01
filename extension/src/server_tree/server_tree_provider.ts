@@ -76,11 +76,12 @@ export class ServerTreeProvider implements TreeDataProvider<ServerTreeNode> {
   }
 
   refresh() {
+    this.servers.forEach((s) => s.refresh());
     this._onDidChangeTreeData.fire();
   }
 
-  async refreshServer(node: ServerNode) {
-    await node.refresh();
+  refreshServer(node: ServerNode) {
+    node.refresh();
     this._onDidChangeTreeData.fire();
   }
 

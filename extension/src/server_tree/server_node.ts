@@ -57,7 +57,7 @@ export class ServerNode extends ServerTreeNode {
     this.loaded = false;
   }
 
-  async refresh() {
+  refresh() {
     this.loaded = false;
   }
 }
