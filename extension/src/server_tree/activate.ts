@@ -8,6 +8,21 @@ import { clearServerMap } from "./servers";
 import { OutboxListNode } from "./outbox_list_node";
 import { TenantNode } from "./tenant_node";
 
+enum Command {
+  show = "serverTree.show",
+  refresh = "serverTree.refresh",
+  addServer = "serverTree.addServer",
+  deleteServer = "serverTree.deleteServer",
+  addTenant = "serverTree.addTenant",
+  renameTenant = "serverTree.renameTenant",
+  deleteTenant = "serverTree.deleteTenant",
+  renameServer = "serverTree.renameServer",
+  refreshServer = "serverTree.refreshServer",
+  resetData = "serverTree.resetData",
+  viewEventLog = "serverTree.viewEventLog",
+  viewOutbox = "serverTree.viewOutbox",
+}
+
 export function activateServerTree(context: ExtensionContext) {
   const provider = new ServerTreeProvider(context);
 
@@ -16,15 +31,15 @@ export function activateServerTree(context: ExtensionContext) {
     treeDataProvider: provider,
   });
 
-  registerCommand(context, "serverTree.show", () => {
+  registerCommand(context, Command.show, () => {
     window.createTreeView("serverTree", {
       treeDataProvider: provider,
     });
   });
 
-  registerCommand(context, "serverTree.refresh", () => provider.refresh());
+  registerCommand(context, Command.refresh, () => provider.refresh());
 
-  registerCommand(context, "serverTree.addServer", async () => {
+  registerCommand(context, Command.addServer, async () => {
     const uri = await getUri(provider);
     if (!uri) {
       return;
@@ -41,24 +56,20 @@ export function activateServerTree(context: ExtensionContext) {
     await provider.addServer(uri, name);
   });
 
-  registerCommand(
-    context,
-    "serverTree.deleteServer",
-    async (node: ServerNode) => {
-      const answer = await window.showWarningMessage(
-        `Are you sure you want to delete ${node.getName()}?`,
-        { modal: true },
-        "Delete",
-      );
-      if (answer !== "Delete") {
-        return;
-      }
+  registerCommand(context, Command.deleteServer, async (node: ServerNode) => {
+    const answer = await window.showWarningMessage(
+      `Are you sure you want to delete ${node.getName()}?`,
+      { modal: true },
+      "Delete",
+    );
+    if (answer !== "Delete") {
+      return;
+    }
 
-      await provider.deleteServer(node.getUri());
-    },
-  );
+    await provider.deleteServer(node.getUri());
+  });
 
-  registerCommand(context, "serverTree.addTenant", async (node: ServerNode) => {
+  registerCommand(context, Command.addTenant, async (node: ServerNode) => {
     const name = await getName("Tenant name");
     if (name === undefined) {
       return;
@@ -67,61 +78,45 @@ export function activateServerTree(context: ExtensionContext) {
     await provider.addTenant(node, name);
   });
 
-  registerCommand(
-    context,
-    "serverTree.renameTenant",
-    async (node: TenantNode) => {
-      const name = await getName("Tenant name", node.getName());
-      if (name === undefined) {
-        return;
-      }
+  registerCommand(context, Command.renameTenant, async (node: TenantNode) => {
+    const name = await getName("Tenant name", node.getName());
+    if (name === undefined) {
+      return;
+    }
 
-      await provider.renameTenant(node, name);
-    },
-  );
+    await provider.renameTenant(node, name);
+  });
 
-  registerCommand(
-    context,
-    "serverTree.deleteTenant",
-    async (node: TenantNode) => {
-      const answer = await window.showWarningMessage(
-        `Are you sure you want to delete ${node.getName()}?`,
-        { modal: true },
-        "Delete",
-      );
-      if (answer !== "Delete") {
-        return;
-      }
-    },
-  );
+  registerCommand(context, Command.deleteTenant, async (node: TenantNode) => {
+    const answer = await window.showWarningMessage(
+      `Are you sure you want to delete ${node.getName()}?`,
+      { modal: true },
+      "Delete",
+    );
+    if (answer !== "Delete") {
+      return;
+    }
+  });
 
-  registerCommand(
-    context,
-    "serverTree.renameServer",
-    async (node: ServerNode) => {
-      const name = await getName("Server name", node.getName());
-      if (name === undefined) {
-        return;
-      }
+  registerCommand(context, Command.renameServer, async (node: ServerNode) => {
+    const name = await getName("Server name", node.getName());
+    if (name === undefined) {
+      return;
+    }
 
-      await provider.addServer(node.getUri(), name);
-    },
-  );
+    await provider.addServer(node.getUri(), name);
+  });
 
-  registerCommand(
-    context,
-    "serverTree.refreshServer",
-    async (node: ServerNode) => {
-      await provider.refreshServer(node);
-    },
-  );
+  registerCommand(context, Command.refreshServer, async (node: ServerNode) => {
+    await provider.refreshServer(node);
+  });
 
-  registerCommand(context, "serverTree.resetData", async () => {
+  registerCommand(context, Command.resetData, async () => {
     clearServerMap(context);
     provider.refresh();
   });
 
-  registerCommand(context, "serverTree.viewEventLog", (node: EventLogNode) => {
+  registerCommand(context, Command.viewEventLog, (node: EventLogNode) => {
     node.openWebview(context);
   });
 
@@ -143,7 +138,7 @@ export function activateServerTree(context: ExtensionContext) {
     },
   );
 
-  registerCommand(context, "serverTree.viewOutbox", (node: OutboxNode) => {
+  registerCommand(context, Command.viewOutbox, (node: OutboxNode) => {
     node.openWebview(context);
   });
 }
