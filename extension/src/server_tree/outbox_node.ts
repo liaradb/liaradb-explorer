@@ -27,14 +27,7 @@ export class OutboxNode extends ServerTreeNode {
   }
 
   getName() {
-    const low = this.outbox.getLow();
-    const high = this.outbox.getHigh();
-
-    if (low == high) {
-      return `Partition ${low}`;
-    }
-
-    return `Partition ${low} - ${high}`;
+    return this.outbox.getName();
   }
 
   async getChildren(): Promise<ServerTreeNode[]> {

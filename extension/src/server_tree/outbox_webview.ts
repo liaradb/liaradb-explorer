@@ -30,13 +30,6 @@ export class OutboxWebview extends Panel<{
   }
 
   getName() {
-    const low = this.outbox.getLow();
-    const high = this.outbox.getHigh();
-
-    if (low == high) {
-      return `Partition ${low}`;
-    }
-
-    return `Partition ${low} - ${high}`;
+    return this.outbox.getName();
   }
 }

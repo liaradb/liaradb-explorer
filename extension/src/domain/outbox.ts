@@ -21,4 +21,12 @@ export class Outbox {
   getHigh() {
     return this.high;
   }
+
+  getName() {
+    if (this.low == this.high) {
+      return `Partition ${this.low}`;
+    }
+
+    return `Partition ${this.low} - ${this.high}`;
+  }
 }
