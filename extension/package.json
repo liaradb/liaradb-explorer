@@ -45,80 +45,80 @@
       },
       {
         "command": "serverTree.show",
-        "title": "LiaraDB: Show",
-        "shortTitle": "Show",
+        "title": "Show",
+        "category": "LiaraDB",
         "icon": "$(refresh)"
       },
       {
         "command": "serverTree.addServer",
-        "title": "LiaraDB: Add Server",
-        "shortTitle": "Add Server",
+        "title": "Add Server",
+        "category": "LiaraDB",
         "icon": "$(plus)"
       },
       {
         "command": "serverTree.addTenant",
-        "title": "LiaraDB: Add Tenant",
-        "shortTitle": "Add Tenant",
+        "title": "Add Tenant",
+        "category": "LiaraDB",
         "icon": "$(plus)"
       },
       {
         "command": "serverTree.addOutbox",
-        "title": "LiaraDB: Add Outbox",
-        "shortTitle": "Add Outbox",
+        "title": "Add Outbox",
+        "category": "LiaraDB",
         "icon": "$(plus)"
       },
       {
         "command": "serverTree.deleteServer",
-        "title": "LiaraDB: Delete Server",
-        "shortTitle": "Delete Server",
+        "title": "Delete Server",
+        "category": "LiaraDB",
         "icon": "$(trash)"
       },
       {
         "command": "serverTree.deleteTenant",
-        "title": "LiaraDB: Delete Tenant",
-        "shortTitle": "Delete Tenant",
+        "title": "Delete Tenant",
+        "category": "LiaraDB",
         "icon": "$(trash)"
       },
       {
         "command": "serverTree.refresh",
-        "title": "LiaraDB: Refresh",
-        "shortTitle": "Refresh",
+        "title": "Refresh",
+        "category": "LiaraDB",
         "icon": "$(refresh)"
       },
       {
         "command": "serverTree.refreshServer",
-        "title": "LiaraDB: Refresh Server",
-        "shortTitle": "Refresh Server",
+        "title": "Refresh Server",
+        "category": "LiaraDB",
         "icon": "$(refresh)"
       },
       {
         "command": "serverTree.renameTenant",
-        "title": "LiaraDB: Rename Tenant",
-        "shortTitle": "Rename Tenant",
+        "title": "Rename Tenant",
+        "category": "LiaraDB",
         "icon": "$(edit)"
       },
       {
         "command": "serverTree.renameServer",
-        "title": "LiaraDB: Rename Server",
-        "shortTitle": "Rename Server",
+        "title": "Rename Server",
+        "category": "LiaraDB",
         "icon": "$(edit)"
       },
       {
         "command": "serverTree.resetData",
-        "title": "LiaraDB: Reset Data",
-        "shortTitle": "Reset Data",
+        "title": "Reset Data",
+        "category": "LiaraDB",
         "icon": "$(trash)"
       },
       {
         "command": "serverTree.viewEventLog",
-        "title": "LiaraDB: View Event Log",
-        "shortTitle": "View Event Log",
+        "title": "View Event Log",
+        "category": "LiaraDB",
         "icon": "$(debug-start)"
       },
       {
         "command": "serverTree.viewOutbox",
-        "title": "LiaraDB: View Outbox",
-        "shortTitle": "View Outbox",
+        "title": "View Outbox",
+        "category": "LiaraDB",
         "icon": "$(debug-start)"
       }
     ],
