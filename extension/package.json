@@ -1,6 +1,6 @@
 {
-  "name": "liaradb-explorer",
-  "displayName": "liaradb-explorer",
+  "name": "liaradb",
+  "displayName": "LiaraDB Explorer",
   "description": "",
   "repository": {
     "url": "https://github.com/liaradb/liaradb-explorer"
@@ -44,79 +44,79 @@
         "icon": "$(refresh)"
       },
       {
-        "command": "serverTree.show",
+        "command": "liaradb.show",
         "title": "Show",
         "category": "LiaraDB",
         "icon": "$(refresh)"
       },
       {
-        "command": "serverTree.addServer",
+        "command": "liaradb.addServer",
         "title": "Add Server",
         "category": "LiaraDB",
         "icon": "$(plus)"
       },
       {
-        "command": "serverTree.addTenant",
+        "command": "liaradb.addTenant",
         "title": "Add Tenant",
         "category": "LiaraDB",
         "icon": "$(plus)"
       },
       {
-        "command": "serverTree.addOutbox",
+        "command": "liaradb.addOutbox",
         "title": "Add Outbox",
         "category": "LiaraDB",
         "icon": "$(plus)"
       },
       {
-        "command": "serverTree.deleteServer",
+        "command": "liaradb.deleteServer",
         "title": "Delete Server",
         "category": "LiaraDB",
         "icon": "$(trash)"
       },
       {
-        "command": "serverTree.deleteTenant",
+        "command": "liaradb.deleteTenant",
         "title": "Delete Tenant",
         "category": "LiaraDB",
         "icon": "$(trash)"
       },
       {
-        "command": "serverTree.refresh",
+        "command": "liaradb.refresh",
         "title": "Refresh",
         "category": "LiaraDB",
         "icon": "$(refresh)"
       },
       {
-        "command": "serverTree.refreshServer",
+        "command": "liaradb.refreshServer",
         "title": "Refresh Server",
         "category": "LiaraDB",
         "icon": "$(refresh)"
       },
       {
-        "command": "serverTree.renameTenant",
+        "command": "liaradb.renameTenant",
         "title": "Rename Tenant",
         "category": "LiaraDB",
         "icon": "$(edit)"
       },
       {
-        "command": "serverTree.renameServer",
+        "command": "liaradb.renameServer",
         "title": "Rename Server",
         "category": "LiaraDB",
         "icon": "$(edit)"
       },
       {
-        "command": "serverTree.resetData",
+        "command": "liaradb.resetData",
         "title": "Reset Data",
         "category": "LiaraDB",
         "icon": "$(trash)"
       },
       {
-        "command": "serverTree.viewEventLog",
+        "command": "liaradb.viewEventLog",
         "title": "View Event Log",
         "category": "LiaraDB",
         "icon": "$(debug-start)"
       },
       {
-        "command": "serverTree.viewOutbox",
+        "command": "liaradb.viewOutbox",
         "title": "View Outbox",
         "category": "LiaraDB",
         "icon": "$(debug-start)"
@@ -160,12 +160,12 @@
           "group": "navigation"
         },
         {
-          "command": "serverTree.refresh",
+          "command": "liaradb.refresh",
           "when": "view == serverTree",
           "group": "navigation"
         },
         {
-          "command": "serverTree.addServer",
+          "command": "liaradb.addServer",
           "when": "view == serverTree",
           "group": "navigation"
         }
@@ -181,44 +181,44 @@
           "when": "view == nodeDependencies && viewItem == dependency"
         },
         {
-          "command": "serverTree.addTenant",
+          "command": "liaradb.addTenant",
           "when": "view == serverTree && viewItem == server",
           "group": "inline"
         },
         {
-          "command": "serverTree.refreshServer",
+          "command": "liaradb.refreshServer",
           "when": "view == serverTree && viewItem == server",
           "group": "inline"
         },
         {
-          "command": "serverTree.renameServer",
+          "command": "liaradb.renameServer",
           "when": "view == serverTree && viewItem == server"
         },
         {
-          "command": "serverTree.deleteServer",
+          "command": "liaradb.deleteServer",
           "when": "view == serverTree && viewItem == server"
         },
         {
-          "command": "serverTree.renameTenant",
+          "command": "liaradb.renameTenant",
           "when": "view == serverTree && viewItem == tenant",
           "group": "inline"
         },
         {
-          "command": "serverTree.deleteTenant",
+          "command": "liaradb.deleteTenant",
           "when": "view == serverTree && viewItem == tenant"
         },
         {
-          "command": "serverTree.viewEventLog",
+          "command": "liaradb.viewEventLog",
           "when": "view == serverTree && viewItem == eventLog",
           "group": "inline"
         },
         {
-          "command": "serverTree.addOutbox",
+          "command": "liaradb.addOutbox",
           "when": "view == serverTree && viewItem == outboxList",
           "group": "inline"
         },
         {
-          "command": "serverTree.viewOutbox",
+          "command": "liaradb.viewOutbox",
           "when": "view == serverTree && viewItem == outbox",
           "group": "inline"
         }
@@ -231,7 +231,7 @@
       },
       {
         "view": "serverTree",
-        "contents": "No servers found.\n[Add Server](command:serverTree.addServer)"
+        "contents": "No servers found.\n[Add Server](command:liaradb.addServer)"
       }
     ]
   },

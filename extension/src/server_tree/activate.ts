@@ -9,18 +9,18 @@ import { OutboxListNode } from "./outbox_list_node";
 import { TenantNode } from "./tenant_node";
 
 enum Command {
-  show = "serverTree.show",
-  refresh = "serverTree.refresh",
-  addServer = "serverTree.addServer",
-  deleteServer = "serverTree.deleteServer",
-  addTenant = "serverTree.addTenant",
-  renameTenant = "serverTree.renameTenant",
-  deleteTenant = "serverTree.deleteTenant",
-  renameServer = "serverTree.renameServer",
-  refreshServer = "serverTree.refreshServer",
-  resetData = "serverTree.resetData",
-  viewEventLog = "serverTree.viewEventLog",
-  viewOutbox = "serverTree.viewOutbox",
+  show = "liaradb.show",
+  refresh = "liaradb.refresh",
+  addServer = "liaradb.addServer",
+  deleteServer = "liaradb.deleteServer",
+  addTenant = "liaradb.addTenant",
+  renameTenant = "liaradb.renameTenant",
+  deleteTenant = "liaradb.deleteTenant",
+  renameServer = "liaradb.renameServer",
+  refreshServer = "liaradb.refreshServer",
+  resetData = "liaradb.resetData",
+  viewEventLog = "liaradb.viewEventLog",
+  viewOutbox = "liaradb.viewOutbox",
 }
 
 export function activateServerTree(context: ExtensionContext) {
@@ -122,7 +122,7 @@ export function activateServerTree(context: ExtensionContext) {
 
   registerCommand(
     context,
-    "serverTree.addOutbox",
+    "liaradb.addOutbox",
     async (node: OutboxListNode) => {
       const low = await getNumber("Low range", "0");
       if (low === undefined) {
