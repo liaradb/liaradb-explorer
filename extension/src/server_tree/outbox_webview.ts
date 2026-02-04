@@ -19,7 +19,7 @@ export class OutboxWebview extends Panel<{
   init() {
     super.init({
       type: "outboxWebview",
-      title: `Partition ${this.outbox.getLow()} - ${this.outbox.getHigh()}`,
+      title: this.getName(),
       icon: "checklist",
       route: "outbox",
       params: {
@@ -27,5 +27,16 @@ export class OutboxWebview extends Panel<{
         outboxId: this.outbox.getId(),
       },
     });
+  }
+
+  getName() {
+    const low = this.outbox.getLow();
+    const high = this.outbox.getHigh();
+
+    if (low == high) {
+      return `Partition ${low}`;
+    }
+
+    return `Partition ${low} - ${high}`;
   }
 }

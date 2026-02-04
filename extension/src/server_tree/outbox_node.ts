@@ -20,13 +20,21 @@ export class OutboxNode extends ServerTreeNode {
   webview?: OutboxWebview;
 
   getTreeItem() {
-    const item = new TreeItem(
-      `Partition ${this.outbox.getLow()} - ${this.outbox.getHigh()}`,
-      TreeItemCollapsibleState.None,
-    );
+    const item = new TreeItem(this.getName(), TreeItemCollapsibleState.None);
     item.iconPath = new ThemeIcon("checklist");
     item.contextValue = "outbox";
     return item;
+  }
+
+  getName() {
+    const low = this.outbox.getLow();
+    const high = this.outbox.getHigh();
+
+    if (low == high) {
+      return `Partition ${low}`;
+    }
+
+    return `Partition ${low} - ${high}`;
   }
 
   async getChildren(): Promise<ServerTreeNode[]> {
