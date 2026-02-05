@@ -4,6 +4,9 @@ import { credentials } from "@grpc/grpc-js";
 
 import { EventSourceServiceClient } from "../generated/eventsource_grpc_pb";
 import {
+  AppendEvent,
+  AppendOptions,
+  AppendRequest,
   CreateOutboxRequest,
   CreateTenantRequest,
   GetOutboxRequest,
@@ -20,7 +23,9 @@ import {
   unaryCallToPromise,
 } from "./unaryCallToPromise";
 
-import { Outbox, Tenant } from "../domain";
+import { Event, Outbox, Tenant } from "../domain";
+
+import { Timestamp } from "./util";
 
 export class EventSourceService {
   constructor(private href: string) {
@@ -33,6 +38,60 @@ export class EventSourceService {
 
   private client: EventSourceServiceClient;
   private service: ReturnType<typeof createService>;
+
+  async append({
+    events,
+    correlationId,
+    requestId,
+    time,
+    userId,
+    partitionId,
+    tenantId,
+  }: {
+    events: Event[];
+    correlationId: string;
+    requestId: string;
+    time: Date;
+    userId: string;
+    partitionId: number;
+    tenantId: string;
+  }) {
+    const request = new AppendRequest();
+
+    request.setEventsList(events.map(this.createEvent));
+
+    const options = new AppendOptions();
+    options.setCorrelationId(correlationId);
+    options.setRequestId(requestId);
+    options.setTime(Timestamp.fromDate(time).toTimestamp());
+    options.setUserId(userId);
+
+    request.setOptions(options);
+    request.setPartitionId(partitionId);
+    request.setTenantId(tenantId);
+
+    await this.service.append(request);
+  }
+
+  private createEvent({
+    aggregateId,
+    aggregateName,
+    data,
+    id,
+    name,
+    schema,
+    version,
+  }: Event) {
+    const event = new AppendEvent();
+    event.setAggregateId(aggregateId);
+    event.setAggregateName(aggregateName);
+    event.setData(data);
+    event.setId(id);
+    event.setName(name);
+    event.setSchema(schema);
+    event.setVersion(version);
+    return event;
+  }
 
   async createOutbox(tenantId: string, low: number, high: number) {
     const request = new CreateOutboxRequest();
