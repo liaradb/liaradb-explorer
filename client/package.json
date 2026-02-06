@@ -58,10 +58,14 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
+    "@cardboardrobots/merge": "^0.0.0",
+    "@hookform/resolvers": "^5.2.2",
     "@vscode-elements/elements-lite": "^0.4.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "react-hook-form": "^7.71.1",
     "styled-components": "^6.3.8",
-    "vscode-webview": "^1.0.1-beta.1"
+    "vscode-webview": "^1.0.1-beta.1",
+    "yup": "^1.7.1"
   }
 }
