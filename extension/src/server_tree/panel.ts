@@ -9,6 +9,7 @@ import {
   window,
 } from "vscode";
 
+import { Event } from "../domain";
 import { EventSourceService } from "../service";
 
 export class Panel<TParams> {
@@ -123,6 +124,24 @@ export class Panel<TParams> {
     const service = new EventSourceService("localhost:50055");
     try {
       switch (request.data.method) {
+        case "append":
+          await service.append({
+            ...request.data.message,
+            events: request.data.message.events.map(
+              (e) =>
+                new Event(
+                  e.aggregateId,
+                  e.aggregateName,
+                  e.data,
+                  e.id,
+                  e.name,
+                  e.schema,
+                  e.version,
+                ),
+            ),
+          });
+          this.send(webview, request.id, {});
+          break;
         case "getAggregate":
           const events = await service.getAggregate(
             request.data.message.tenantId,
@@ -182,7 +201,7 @@ export type RequestMessage = {
   data: RequestData;
 };
 
-type RequestData = GetAggregateRequest | GetOutboxRequest;
+type RequestData = AppendEventRequest | GetAggregateRequest | GetOutboxRequest;
 
 export type ResponseMessage = {
   command: "response";
@@ -191,7 +210,35 @@ export type ResponseMessage = {
   error: string | undefined;
 };
 
-type ResponseData = GetAggregateResponse | GetOutboxResponse;
+type ResponseData =
+  | AppendEventResponse
+  | GetAggregateResponse
+  | GetOutboxResponse;
+
+type AppendEventRequest = {
+  method: "append";
+  message: {
+    events: EventDto[];
+    correlationId: string;
+    requestId: string;
+    time: Date;
+    userId: string;
+    partitionId: number;
+    tenantId: string;
+  };
+};
+
+type EventDto = {
+  aggregateId: string;
+  aggregateName: string;
+  data: string | Uint8Array<ArrayBufferLike>;
+  id: string;
+  name: string;
+  schema: string;
+  version: number;
+};
+
+type AppendEventResponse = {};
 
 type GetAggregateRequest = {
   method: "getAggregate";

@@ -2,6 +2,7 @@ import React, { FC, useCallback, useState } from "react";
 import styled from "styled-components";
 
 import { ActionButton, TextField } from "../../components";
+import { Messenger } from "../../messenger";
 import { useMessenger } from "../../messenger_context";
 
 export type EventLogPageRoute = {
@@ -87,3 +88,46 @@ type GetAggregateRequest = {
 type GetAggregateResponse = {
   events: any[];
 };
+
+const append = async (
+  messenger: Messenger,
+  message: {
+    events: EventDto[];
+    correlationId: string;
+    requestId: string;
+    time: Date;
+    userId: string;
+    partitionId: number;
+    tenantId: string;
+  },
+) => {
+  return messenger.sendRequest<AppendEventRequest, AppendEventResponse>({
+    method: "append",
+    message,
+  });
+};
+
+type AppendEventRequest = {
+  method: "append";
+  message: {
+    events: EventDto[];
+    correlationId: string;
+    requestId: string;
+    time: Date;
+    userId: string;
+    partitionId: number;
+    tenantId: string;
+  };
+};
+
+type EventDto = {
+  aggregateId: string;
+  aggregateName: string;
+  data: string | Uint8Array<ArrayBufferLike>;
+  id: string;
+  name: string;
+  schema: string;
+  version: number;
+};
+
+type AppendEventResponse = {};
