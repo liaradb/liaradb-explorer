@@ -2,7 +2,7 @@
 
 import { credentials } from "@grpc/grpc-js";
 
-import { EventSourceServiceClient } from "../generated/eventsource_grpc_pb";
+import { EventSourceServiceClient } from "@liaradb/liaradb-client/src/generated/eventsource_grpc_pb";
 import {
   AppendEvent,
   AppendOptions,
@@ -16,7 +16,7 @@ import {
   Outbox as OutboxMessage,
   RenameTenantRequest,
   Tenant as TenantMessage,
-} from "../generated/eventsource_pb";
+} from "@liaradb/liaradb-client/src/generated/eventsource_pb";
 
 import {
   serverStreamCallToPromise,
@@ -116,7 +116,20 @@ export class EventSourceService {
 
     const response = await this.service.get(request);
 
-    return response.map((event) => event.toObject());
+    return response
+      .map((event) => event.toObject())
+      .map(
+        (e) =>
+          new Event(
+            e.aggregateId,
+            e.aggregateName,
+            e.data,
+            e.id,
+            e.name,
+            e.schema,
+            e.version,
+          ),
+      );
   }
 
   async getOutbox(outboxId: string, tenantId: string) {
