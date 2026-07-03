@@ -1,9 +1,8 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC } from "react";
 import styled from "styled-components";
 
 import { ActionButton, TextField } from "../../components";
-import { Messenger } from "../../messenger";
-import { useMessenger } from "../../messenger_context";
+import { useEventLogForm } from "./event_log_form";
 
 export type EventLogPageRoute = {
   route: "eventlog";
@@ -14,43 +13,17 @@ export type EventLogPageParams = {
   tenantId: string;
 };
 
-export const EventLogPage: FC<EventLogPageParams> = (params) => {
-  const messenger = useMessenger();
-
-  const [aggregateId, setAggregateId] = useState("");
-
-  const getAggregate = useCallback(async () => {
-    const result = await messenger.sendRequest<
-      GetAggregateRequest,
-      GetAggregateResponse
-    >({
-      method: "getAggregate",
-      message: {
-        tenantId: params.tenantId,
-        partitionId: 0,
-        aggregateId,
-      },
-    });
-
-    console.log(result);
-  }, [params.tenantId, aggregateId]);
+export const EventLogPage: FC<EventLogPageParams> = ({ tenantId }) => {
+  const { register, getAggregate } = useEventLogForm(tenantId);
 
   return (
     <Container>
       <h1>Event Log</h1>
-      <FormContainer
-        onSubmit={(event) => {
-          event.preventDefault();
-          getAggregate();
-        }}
-      >
+      <FormContainer onSubmit={getAggregate}>
         <TextField
+          {...register("aggregateId")}
           label="Aggregate Id"
           after={<ActionButton title="Search" icon="search" type="submit" />}
-          value={aggregateId}
-          onChange={(event) => {
-            setAggregateId(event.target.value);
-          }}
         />
       </FormContainer>
     </Container>
@@ -75,59 +48,3 @@ const FormContainer = styled.form`
     margin: 0;
   }
 `;
-
-type GetAggregateRequest = {
-  method: "getAggregate";
-  message: {
-    tenantId: string;
-    partitionId: number;
-    aggregateId: string;
-  };
-};
-
-type GetAggregateResponse = {
-  events: any[];
-};
-
-const append = async (
-  messenger: Messenger,
-  message: {
-    events: EventDto[];
-    correlationId: string;
-    requestId: string;
-    time: Date;
-    userId: string;
-    partitionId: number;
-    tenantId: string;
-  },
-) => {
-  return messenger.sendRequest<AppendEventRequest, AppendEventResponse>({
-    method: "append",
-    message,
-  });
-};
-
-type AppendEventRequest = {
-  method: "append";
-  message: {
-    events: EventDto[];
-    correlationId: string;
-    requestId: string;
-    time: Date;
-    userId: string;
-    partitionId: number;
-    tenantId: string;
-  };
-};
-
-type EventDto = {
-  aggregateId: string;
-  aggregateName: string;
-  data: string | Uint8Array<ArrayBufferLike>;
-  id: string;
-  name: string;
-  schema: string;
-  version: number;
-};
-
-type AppendEventResponse = {};
